@@ -1,0 +1,68 @@
+import { faker } from '@faker-js/faker';
+import { cleanUpTestData } from '@libs/test-utils/test-db-cleaner';
+import {
+  CreateAsset,
+} from '@modules/asset/commands/create-asset/create-asset.request.dto';
+import { Id } from '@src/libs/ddd/interface-adapters/interfaces/id.interface';
+import { getTestServer, TestServer } from '@tests/jestSetupAfterEnv';
+import { defineFeature, loadFeature } from 'jest-cucumber';
+import * as request from 'supertest';
+import { getConnection } from 'typeorm';
+
+const feature = loadFeature('tests/asset/create-asset/create-asset.feature');
+
+/**
+ * e2e test implementing a Gherkin feature file
+ * https://github.com/Sairyss/backend-best-practices#testing
+ */
+
+defineFeature(feature, (test) => {
+  let testServer: TestServer;
+  let httpServer: request.SuperTest<request.Test>;
+
+  beforeAll(() => {
+    testServer = getTestServer();
+    httpServer = request(testServer.serverApplication.getHttpServer());
+  });
+
+  afterAll(async () => {
+    await getConnection().close();
+  });
+
+  afterEach(async () => {
+    await cleanUpTestData();
+  });
+
+  test('Seller creates an asset manually', ({ given, when, then, and }) => {
+    const asset: Partial<CreateAsset> = {};
+    let assetId: Id;
+
+    given('I set the asset name', () => {
+      asset.name = faker.commerce.productName();
+    });
+
+    and('I set the asset description', () => {
+      asset.description = faker.commerce.productDescription();
+    });
+
+    when('I send a request to create an asset', async () => {
+      const res = await httpServer.post('/v1/assets').send(asset).expect(201);
+      assetId = res.body;
+    });
+
+    then('I receive my asset ID', () => {
+      expect(assetId).toMatchSnapshot({ id: expect.any(String) });
+    });
+
+    and(
+      'I can verify that the created asset is exactly as configured',
+      async () => {
+        const res = await httpServer
+          .get(`/v1/assets/${assetId.id}`)
+          .expect(200);
+
+        expect(res.body.id === assetId.id).toBe(true);
+      },
+    );
+  });
+});

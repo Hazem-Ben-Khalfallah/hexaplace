@@ -1,0 +1,61 @@
+module.exports = {
+  verbose: true,
+  detectOpenHandles: true,
+  moduleFileExtensions: ['js', 'json', 'ts'],
+  rootDir: '.',
+  testEnvironment: 'node',
+  coverageDirectory: '<rootDir>/coverage/unit',
+  testRegex: 'spec.ts$',
+  testPathIgnorePatterns: ['tests/ignored', 'e2e-spec.ts$'],
+  coverageReporters: ['text-summary', 'html', 'cobertura', 'lcov'],
+  collectCoverageFrom: ['src/**/*.{js,ts}'],
+  coveragePathIgnorePatterns: [
+    '.module.ts',
+    '.providers.ts',
+    '.routes.ts',
+    '.factory.ts',
+    '.controller.ts',
+    '.dto.ts',
+    '.orm-repository.ts',
+    '.write-repository.ts',
+    '.unit-of-work.ts',
+    '.gateway.ts',
+    '<rootDir>/src/main.ts',
+    '<rootDir>/src/migration.ts',
+    '<rootDir>/src/libs/',
+    '<rootDir>/src/infrastructure/',
+    // TODO update path
+    '.service.ts',
+  ],
+  moduleNameMapper: {
+    '@config/(.*)$': '<rootDir>/src/infrastructure/configs/$1',
+    '@exceptions$': '<rootDir>/src/libs/exceptions',
+    '@infrastructure/(.*)$': '<rootDir>/src/infrastructure/$1',
+    '@libs/(.*)$': '<rootDir>/src/libs/$1',
+    '@modules/(.*)$': '<rootDir>/src/modules/$1',
+    '@src/(.*)$': '<rootDir>/src/$1',
+    '@tests/(.*)$': '<rootDir>/tests/$1',
+  },
+  transform: {
+    '^.+\\.(t|j)s$': 'ts-jest',
+  },
+  reporters: [
+    'default',
+    [
+      'jest-junit',
+      {
+        classNameTemplate: '{classname}',
+        suiteNameTemplate: '{filename}',
+        titleTemplate: '{title}',
+      },
+    ],
+  ],
+  coverageThreshold: {
+    global: {
+      statements: 100,
+      branches: 100,
+      functions: 100,
+      lines: 100,
+    },
+  },
+};
