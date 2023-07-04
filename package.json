@@ -2,7 +2,7 @@
   "name": "hexaplace-api",
   "version": "0.1.0",
   "displayName": "Hexaplace API",
-  "description": "Hexaplace: a marketplace sample app to showcase Hexagonal architecture",
+  "description": "Hexaplace: an e-commerce sample app to showcase Hexagonal architecture",
   "contributors": [],
   "private": true,
   "license": "UNLICENSED",

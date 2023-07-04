@@ -9,6 +9,7 @@ This is a TypeScript/NestJS project that demonstrates the implementation of Hexa
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Usage](#usage)
+  - [DB migration](#db-migration)
   - [Testing](#testing)
   - [Code Coverage](#code-coverage)
   - [Swagger Documentation](#swagger-documentation)
@@ -64,6 +65,14 @@ After starting the application, you can access the Swagger documentation by open
 
 ```
 http://localhost:3000/docs
+```
+
+## DB migration
+
+To create the need database and its related tables, use the following command:
+
+```shell
+npm run migration:up
 ```
 
 ## Testing
