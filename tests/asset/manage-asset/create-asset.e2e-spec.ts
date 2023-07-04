@@ -9,10 +9,6 @@ import { getConnection } from 'typeorm';
 
 const feature = loadFeature('tests/asset/manage-asset/create-asset.feature');
 
-/**
- * e2e test implementing a Gherkin feature file
- * https://github.com/Sairyss/backend-best-practices#testing
- */
 
 defineFeature(feature, (test) => {
   let testServer: TestServer;
@@ -31,7 +27,7 @@ defineFeature(feature, (test) => {
     await cleanUpTestData();
   });
 
-  test('I create an asset', ({ given, when, then, and }) => {
+  test('Creating an asset', ({ given, when, then, and }) => {
     const asset: Partial<CreateAsset> = {};
 
     given('I set the asset name', () => {

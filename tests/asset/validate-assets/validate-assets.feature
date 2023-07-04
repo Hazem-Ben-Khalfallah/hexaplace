@@ -1,4 +1,7 @@
 Feature: Manage assets
+  As a marketplace owner
+  I want to review and validate newly created assets
+  So that I can ensure the quality and integrity of what is sold in my marketplace
 
   Background:
     Given the following assets exist:
@@ -13,12 +16,12 @@ Feature: Manage assets
       | HxrhbLNbEM | Asset5C | d28aa1d1-9b8d-4b2a-b055-769dbf8c8f86 | product_rejected | OPERATOR  |                               |
       | hXRXMVn1Tl | asset5d | d28aa1d1-9b8d-4b2a-b055-769dbf8c8f86 | product_deleted  | OPERATOR  |                               |
 
-  Scenario: I approve one asset
-    When I approve asset with id "KPuD21MmCx"
-    Then I can check that the asset with id "KPuD21MmCx" is approved
-    And The seller get notified
+  Scenario: Approving an asset
+    When I approve an asset with id "KPuD21MmCx"
+    Then the asset with id "KPuD21MmCx" should be marked as approved
+    And the seller gets notified
 
-  Scenario: I reject one asset
-    When I reject asset with id "KPuD21MmCx" for the reason "rejection reason"
-    Then I can check that the asset with id "KPuD21MmCx" is rejected
-    And The seller get notified
+  Scenario: Rejecting an asset
+    When I reject an asset with id "KPuD21MmCx" for the reason "rejection reason"
+    Then the asset with id "KPuD21MmCx" should be marked as rejected
+    And the seller gets notified

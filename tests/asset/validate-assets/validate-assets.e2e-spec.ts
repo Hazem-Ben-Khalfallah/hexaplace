@@ -51,7 +51,7 @@ defineFeature(feature, (test) => {
     await cleanUpTestData();
   });
 
-  test('I approve one asset', ({ when, then, given, and }) => {
+  test('Approving an asset', ({ when, then, given, and }) => {
     given(
       'the following assets exist:',
       async (partialAssets: PartialAsset[]) => {
@@ -59,26 +59,26 @@ defineFeature(feature, (test) => {
       },
     );
 
-    when(/^I approve asset with id "(.*)"$/, async (assetId: string) => {
+    when(/^I approve an asset with id "(.*)"$/, async (assetId: string) => {
       await httpServer
         .post(`/v1/assets/${assetId}/approve`)
         .expect(HttpStatus.NO_CONTENT);
     });
 
     then(
-      /^I can check that the asset with id "(.*)" is approved$/,
+      /^the asset with id "(.*)" should be marked as approved$/,
       async (assetId: string) => {
         const asset = await getAssetById(assetReadRepository, assetId);
         expect(asset.getPropsCopy().status).toEqual(AssetStatus.APPROVED);
       },
     );
 
-    and('The seller get notified', () => {
+    and('the seller gets notified', () => {
       // TODO add notification check
     });
   });
 
-  test('I reject one asset', ({ when, then, and, given }) => {
+  test('Rejecting an asset', ({ when, then, and, given }) => {
     let reason: string;
 
     given(
@@ -89,7 +89,7 @@ defineFeature(feature, (test) => {
     );
 
     when(
-      /^I reject asset with id "(.*)" for the reason "(.*)"$/,
+      /^I reject an asset with id "(.*)" for the reason "(.*)"$/,
       async (assetId: string, rejectionReason: string) => {
         reason = rejectionReason;
         await httpServer
@@ -100,14 +100,14 @@ defineFeature(feature, (test) => {
     );
 
     then(
-      /^I can check that the asset with id "(.*)" is rejected$/,
+      /^the asset with id "(.*)" should be marked as rejected$/,
       async (assetId: string) => {
         const asset = await getAssetById(assetReadRepository, assetId);
         expect(asset.getPropsCopy().status).toEqual(AssetStatus.REJECTED);
       },
     );
 
-    and('The seller get notified', () => {
+    and('the seller gets notified', () => {
       // TODO add rejection notification check
     });
   });
