@@ -1,15 +1,13 @@
 import { faker } from '@faker-js/faker';
+import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import { cleanUpTestData } from '@libs/test-utils/test-db-cleaner';
-import {
-  CreateAsset,
-} from '@modules/asset/commands/create-asset/create-asset.request.dto';
-import { Id } from '@src/libs/ddd/interface-adapters/interfaces/id.interface';
+import { CreateAsset } from '@modules/asset/commands/create-asset/create-asset.request.dto';
 import { getTestServer, TestServer } from '@tests/jestSetupAfterEnv';
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import * as request from 'supertest';
 import { getConnection } from 'typeorm';
 
-const feature = loadFeature('tests/asset/create-asset/create-asset.feature');
+const feature = loadFeature('tests/asset/manage-asset/create-asset.feature');
 
 /**
  * e2e test implementing a Gherkin feature file
@@ -33,11 +31,11 @@ defineFeature(feature, (test) => {
     await cleanUpTestData();
   });
 
-  test('Seller creates an asset manually', ({ given, when, then, and }) => {
+  test('I create an asset', ({ given, when, then, and }) => {
     const asset: Partial<CreateAsset> = {};
-    let assetId: Id;
 
     given('I set the asset name', () => {
+      asset.id = UUID.generate().value;
       asset.name = faker.commerce.productName();
     });
 
@@ -46,22 +44,19 @@ defineFeature(feature, (test) => {
     });
 
     when('I send a request to create an asset', async () => {
-      const res = await httpServer.post('/v1/assets').send(asset).expect(201);
-      assetId = res.body;
+      await httpServer.post('/v1/assets').send(asset).expect(201);
     });
 
     then('I receive my asset ID', () => {
-      expect(assetId).toMatchSnapshot({ id: expect.any(String) });
+      expect(asset.id).toBeDefined();
     });
 
     and(
       'I can verify that the created asset is exactly as configured',
       async () => {
-        const res = await httpServer
-          .get(`/v1/assets/${assetId.id}`)
-          .expect(200);
+        const res = await httpServer.get(`/v1/assets/${asset.id}`).expect(200);
 
-        expect(res.body.id === assetId.id).toBe(true);
+        expect(res.body.id === asset.id).toBe(true);
       },
     );
   });

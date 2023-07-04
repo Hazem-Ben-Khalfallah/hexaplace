@@ -1,5 +1,6 @@
 import { LoggerPort } from '@libs/ddd/domain/ports/logger.port';
 import { QueryParams } from '@libs/ddd/domain/ports/repository.ports';
+import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import {
   TypeormRepositoryBase,
   WhereCondition,
@@ -39,7 +40,7 @@ export class AssetOrmRepository
     );
   }
 
-  async findOneByIdOrThrow(id: string): Promise<AssetEntity> {
+  async findOneByIdOrThrow(id: UUID): Promise<AssetEntity> {
     return super.findOneByIdOrThrow(id);
   }
 

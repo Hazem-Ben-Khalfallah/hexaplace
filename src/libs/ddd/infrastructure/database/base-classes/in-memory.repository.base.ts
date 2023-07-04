@@ -1,4 +1,5 @@
 import { AggregateRoot } from '@libs/ddd/domain/base-classes/aggregate-root.base';
+import { BaseEntityProps } from '@libs/ddd/domain/base-classes/entity.base';
 import { DomainEvents } from '@libs/ddd/domain/domain-events';
 import { LoggerPort } from '@libs/ddd/domain/ports/logger.port';
 import {
@@ -11,6 +12,7 @@ import {
 import { ID } from '@libs/ddd/domain/value-objects/id.value-object';
 import { OrmMapper } from '@libs/ddd/infrastructure/database/base-classes/orm-mapper.base';
 import { TypeormEntityBase } from '@libs/ddd/infrastructure/database/base-classes/typeorm.entity.base';
+import { DeepPartial } from '@libs/types';
 import { NotFoundException } from '@src/libs/exceptions';
 
 export abstract class InMemoryRepositoryBase<
@@ -20,7 +22,7 @@ export abstract class InMemoryRepositoryBase<
   OEntity extends TypeormEntityBase,
 > implements WriteRepositoryPort<TEntity>, ReadRepositoryPort<TEntity, OEntity>
 {
-  savedEntities: OEntity[] = [];
+  protected savedEntities: OEntity[] = [];
 
   hasError: boolean;
 
@@ -35,7 +37,7 @@ export abstract class InMemoryRepositoryBase<
     protected readonly logger: LoggerPort,
   ) {}
 
-  private toDomainEntities(entities: OEntity[]): TEntity[] {
+  protected toDomainEntities(entities: OEntity[]): TEntity[] {
     return entities.map((e: OEntity) => this.mapper.toDomainEntity(e));
   }
 
@@ -46,7 +48,7 @@ export abstract class InMemoryRepositoryBase<
     return Promise.resolve(entity);
   }
 
-  async findOneByIdOrThrow(id: ID | string): Promise<TEntity> {
+  async findOneByIdOrThrow(id: ID): Promise<TEntity> {
     if (this.hasError) {
       throw new Error('Fake in-memory error');
     }
@@ -57,9 +59,9 @@ export abstract class InMemoryRepositoryBase<
     return entity;
   }
 
-  private findOneById(id: ID | string): Promise<TEntity | undefined> {
+  private findOneById(id: ID): Promise<TEntity | undefined> {
     const entity: OEntity | undefined = this.savedEntities.find(
-      (e: OEntity) => e.id === id,
+      (e: OEntity) => e.id === id.value,
     );
     return entity
       ? Promise.resolve(this.mapper.toDomainEntity(entity))
@@ -114,16 +116,16 @@ export abstract class InMemoryRepositoryBase<
     return this;
   }
 
-  // FIXME: use params attr to filter entities
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   findMany(params: QueryParams<OEntity>): Promise<TEntity[]> {
-    return Promise.resolve(this.toDomainEntities(this.savedEntities));
+    const entities = this.filterBy(this.savedEntities, params);
+    return Promise.resolve(this.toDomainEntities(entities));
   }
 
-  // FIXME: use params attr to filter entities
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   findOneOrThrow(params: QueryParams<OEntity>): Promise<TEntity> {
-    return Promise.resolve(this.toDomainEntities(this.savedEntities)[0]);
+    const entities = this.filterBy(this.savedEntities, params);
+    return Promise.resolve(this.toDomainEntities(entities)[0]);
   }
 
   // FIXME: use params attr to filter entities
@@ -131,8 +133,9 @@ export abstract class InMemoryRepositoryBase<
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     options: FindManyPaginatedParams<OEntity>,
   ): Promise<DataWithPaginationMeta<TEntity>> {
+    const entities = this.filterBy(this.savedEntities, options.params || {});
     const res: DataWithPaginationMeta<TEntity> = {
-      results: this.toDomainEntities(this.savedEntities),
+      results: this.toDomainEntities(entities),
       nbResultsPerPage: 50,
       limit: 50,
       page: 0,
@@ -142,6 +145,23 @@ export abstract class InMemoryRepositoryBase<
       endCursor: '50',
     };
     return Promise.resolve(res);
+  }
+
+  private filterBy(
+    savedEntities: OEntity[],
+    params: DeepPartial<BaseEntityProps & OEntity>,
+  ) {
+    let entities = savedEntities;
+    if (params) {
+      Object.keys(params).forEach((key: string) => {
+        entities = entities.filter(
+          (entity) =>
+            entity[key as keyof OEntity] ===
+            params[key as keyof QueryParams<OEntity>],
+        );
+      });
+    }
+    return entities;
   }
 
   forceError(): void {

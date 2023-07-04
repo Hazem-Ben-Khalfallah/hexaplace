@@ -15,16 +15,17 @@ type InputParams = {
 };
 
 async function createDatabaseIfItDoesNotExist() {
+  const database = get('DB_NAME').required().asString();
+
   const conn = await getConnectionManager()
     .create({
       ...typeormConfig,
       type: 'postgres',
-      database: undefined,
+      schema: 'public',
+      database
     })
     .connect();
-  const database = get('DB_NAME').required().asString();
   await conn.createQueryRunner().createDatabase(database, true);
-  await conn.close();
 }
 
 async function up(): Promise<void> {
@@ -65,7 +66,6 @@ function usage() {
 /* arguments validation check */
 const input: InputParams = getArgs();
 if (
-  !input?.tenant ||
   !input?.action ||
   ![MigrationAction.UP, MigrationAction.DOWN].includes(
     input.action as MigrationAction,

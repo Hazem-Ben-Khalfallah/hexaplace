@@ -67,6 +67,10 @@ export class AssetEntity extends AggregateRoot<AssetProps> {
     );
   }
 
+  markAsDeleted(): void {
+    this.changeStatusTo(AssetStatus.DELETED);
+  }
+
   private changeStatusTo(status: AssetStatus): void {
     if (this.props.status === AssetStatus.DELETED) {
       throw new AlreadyDeletedAssetError();

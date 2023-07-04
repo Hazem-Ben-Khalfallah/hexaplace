@@ -69,6 +69,10 @@ export class FakeAssetBuilder {
     if (AssetStatus.REJECTED === status) {
       asset.reject('Rejection reason');
     }
+
+    if (AssetStatus.DELETED === status) {
+      asset.markAsDeleted();
+    }
     return asset;
   }
 }

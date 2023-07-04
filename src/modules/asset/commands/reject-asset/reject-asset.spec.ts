@@ -2,38 +2,39 @@ import { Logger } from '@infrastructure/logger/logger';
 import { DateVO } from '@libs/ddd/domain/value-objects/date.value-object';
 import { ULID } from '@libs/ddd/domain/value-objects/ulid.value-object';
 import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
-import { AssetApprovedNotificationInMemoryGateway } from '@modules/asset/adapters/asset-approved-notification/asset-approved-notification.in-memory.gateway';
-import { ApproveAssetCommand } from '@modules/asset/commands/approve-asset/approve-asset.command';
-import { ApproveAssetCommandHandler } from '@modules/asset/commands/approve-asset/approve-asset.command-handler';
+import { AssetRejectdNotificationInMemoryGateway } from '@modules/asset/adapters/asset-rejected-notification/asset-rejected-notification.in-memory.gateway';
+import { RejectAssetCommand } from '@modules/asset/commands/reject-asset/reject-asset.command';
+import { RejectAssetCommandHandler } from '@modules/asset/commands/reject-asset/reject-asset.command-handler';
 import { AssetInMemoryUnitOfWork } from '@modules/asset/database/asset.in-memory.unit-of-work';
 import { AssetStatus } from '@modules/asset/domain/value-objects/asset-status/asset-status.enum';
 import { AlreadyDeletedAssetError } from '@modules/asset/errors/asset/already-deleted-asset-error.error';
 import { AssetIdInvalidError } from '@modules/asset/errors/asset/asset-id-invalid.error';
 import { AssetNotFoundError } from '@modules/asset/errors/asset/asset-not-found.error';
-import { AssetApprovedDomainEventHandler } from '@modules/asset/event-handlers/asset-approved.domain-event-handler';
+import { AssetRejectdDomainEventHandler } from '@modules/asset/event-handlers/asset-rejected.domain-event-handler';
 import { FakeAssetBuilder } from '@tests/asset/fake-asset.builder';
 
-describe('approve asset', () => {
+describe('reject asset', () => {
   let assetInMemoryUnitOfWork: AssetInMemoryUnitOfWork;
-  let approveAssetCommandHandler: ApproveAssetCommandHandler;
+  let rejectAssetCommandHandler: RejectAssetCommandHandler;
 
   beforeEach(() => {
     assetInMemoryUnitOfWork = new AssetInMemoryUnitOfWork();
-    approveAssetCommandHandler = new ApproveAssetCommandHandler(
+    rejectAssetCommandHandler = new RejectAssetCommandHandler(
       assetInMemoryUnitOfWork,
       assetInMemoryUnitOfWork.getReadAssetRepository(),
     );
   });
 
-  describe('when approve asset is not allowed', () => {
+  describe('when reject asset is not allowed', () => {
     it('should return an error if asset id is empty', async () => {
       // given
-      const approveAssetCommand = new ApproveAssetCommand({
+      const rejectAssetCommand = new RejectAssetCommand({
         assetId: '   ',
+        reason: 'some reason',
       });
       await expect(
         // when
-        approveAssetCommandHandler.execute(approveAssetCommand),
+        rejectAssetCommandHandler.execute(rejectAssetCommand),
       )
         // then
         .rejects.toThrow(AssetIdInvalidError);
@@ -41,11 +42,12 @@ describe('approve asset', () => {
 
     it('should return an error if asset is not found', async () => {
       // given
-      const approveAssetCommand = new ApproveAssetCommand({
+      const rejectAssetCommand = new RejectAssetCommand({
         assetId: UUID.generate().value,
+        reason: 'some reason',
       });
       // when
-      await expect(approveAssetCommandHandler.execute(approveAssetCommand))
+      await expect(rejectAssetCommandHandler.execute(rejectAssetCommand))
         // then
         .rejects.toThrow(AssetNotFoundError);
     });
@@ -55,55 +57,57 @@ describe('approve asset', () => {
       const asset = await getAssetBuilder()
         .withStatus(AssetStatus.DELETED)
         .build();
-      const approveAssetCommand = new ApproveAssetCommand({
+      const rejectAssetCommand = new RejectAssetCommand({
         assetId: asset.id.value,
+        reason: 'some reason',
       });
       await expect(
         // when
-        approveAssetCommandHandler.execute(approveAssetCommand),
+        rejectAssetCommandHandler.execute(rejectAssetCommand),
       )
         // then
         .rejects.toThrow(AlreadyDeletedAssetError);
     });
   });
 
-  describe('when approve asset is allowed', () => {
-    let assetApprovedEventHandler: AssetApprovedDomainEventHandler;
-    let assetApprovedInMemoryNotificationGateway: AssetApprovedNotificationInMemoryGateway;
+  describe('when reject asset is allowed', () => {
+    let assetRejectdEventHandler: AssetRejectdDomainEventHandler;
+    let assetRejectdInMemoryNotificationGateway: AssetRejectdNotificationInMemoryGateway;
     beforeEach(() => {
-      assetApprovedInMemoryNotificationGateway =
-        new AssetApprovedNotificationInMemoryGateway();
-      assetApprovedEventHandler = new AssetApprovedDomainEventHandler(
+      assetRejectdInMemoryNotificationGateway =
+        new AssetRejectdNotificationInMemoryGateway();
+      assetRejectdEventHandler = new AssetRejectdDomainEventHandler(
         new Logger(),
-        assetApprovedInMemoryNotificationGateway,
+        assetRejectdInMemoryNotificationGateway,
       );
-      assetApprovedEventHandler.listen();
+      assetRejectdEventHandler.listen();
     });
 
     afterEach(() => {
-      assetApprovedEventHandler.unsubscribe();
+      assetRejectdEventHandler.unsubscribe();
     });
 
-    it('should approve an asset and notify the owner', async () => {
+    it('should reject an asset and notify the owner', async () => {
       // given
       const asset = await getAssetBuilder()
         .withStatus(AssetStatus.DRAFT)
         .build();
-      const approveAssetCommand = new ApproveAssetCommand({
+      const rejectAssetCommand = new RejectAssetCommand({
         assetId: asset.id.value,
+        reason: 'some reason',
       });
 
       // when
-      await approveAssetCommandHandler.execute(approveAssetCommand);
+      await rejectAssetCommandHandler.execute(rejectAssetCommand);
 
       // then
-      const approvedAsset = await assetInMemoryUnitOfWork
+      const rejectdAsset = await assetInMemoryUnitOfWork
         .getReadAssetRepository()
         .findOneByIdOrThrow(asset.id as UUID);
-      expect(approvedAsset.getPropsCopy().status).toEqual(AssetStatus.APPROVED);
+      expect(rejectdAsset.getPropsCopy().status).toEqual(AssetStatus.REJECTED);
       expect(
-        assetApprovedInMemoryNotificationGateway.hasBeenNotifiedOnce(
-          approvedAsset.id.value,
+        assetRejectdInMemoryNotificationGateway.hasBeenNotifiedOnce(
+          rejectdAsset.id.value,
         ),
       ).toBeTruthy();
     });

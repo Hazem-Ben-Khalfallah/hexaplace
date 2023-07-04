@@ -2,7 +2,6 @@ import { faker } from '@faker-js/faker';
 import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import { CreateAssetCommand } from '@modules/asset/commands/create-asset/create-asset.command';
 import { CreateAssetCommandHandler } from '@modules/asset/commands/create-asset/create-asset.command-handler';
-import { AssetInMemoryRepository } from '@modules/asset/database/asset.in-memory.repository';
 import { AssetInMemoryUnitOfWork } from '@modules/asset/database/asset.in-memory.unit-of-work';
 import { AssetEntity } from '@modules/asset/domain/entities/asset.entity';
 import { AssetStatus } from '@modules/asset/domain/value-objects/asset-status/asset-status.enum';
@@ -10,13 +9,14 @@ import { AssetDescriptionRequiredError } from '@modules/asset/errors/asset/asset
 import { AssetNameRequiredError } from '@modules/asset/errors/asset/asset-name-required.error';
 
 describe('Create an asset', () => {
-  let assetInmemoryRepository: AssetInMemoryRepository;
+  let assetInMemoryUnitOfWork: AssetInMemoryUnitOfWork;
   let createAssetCommandHandler: CreateAssetCommandHandler;
 
   beforeEach(() => {
-    assetInmemoryRepository = new AssetInMemoryRepository();
+    assetInMemoryUnitOfWork = new AssetInMemoryUnitOfWork();
+
     createAssetCommandHandler = new CreateAssetCommandHandler(
-      new AssetInMemoryUnitOfWork(),
+      assetInMemoryUnitOfWork,
     );
   });
 
@@ -61,7 +61,7 @@ describe('Create an asset', () => {
 
       // then
       const asset: AssetEntity =
-        await assetInmemoryRepository.findOneByIdOrThrow(id);
+        await assetInMemoryUnitOfWork.getReadAssetRepository().findOneByIdOrThrow(id);
       const assetProps = asset.getPropsCopy();
       expect(assetProps?.status).toEqual(AssetStatus.DRAFT);
     });

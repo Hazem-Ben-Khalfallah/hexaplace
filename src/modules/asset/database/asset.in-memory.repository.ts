@@ -26,7 +26,11 @@ export class AssetInMemoryRepository
   }
 
   findAssets(query: GetAssetsQuery): Promise<AssetEntity[]> {
-    return super.findMany(query);
-  }
+    const filteredAssets: AssetOrmEntity[] = this.savedEntities.filter(
+      (assetOrmEntity: AssetOrmEntity) =>
+        !query.name || assetOrmEntity.name.startsWith(query.name),
+    );
 
+    return Promise.resolve(this.toDomainEntities(filteredAssets));
+  }
 }

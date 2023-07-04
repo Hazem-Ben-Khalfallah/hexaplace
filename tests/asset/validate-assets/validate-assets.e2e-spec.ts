@@ -1,3 +1,4 @@
+import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import { cleanUpTestData } from '@libs/test-utils/test-db-cleaner';
 import { AssetEntity } from '@modules/asset/domain/entities/asset.entity';
 import { AssetStatus } from '@modules/asset/domain/value-objects/asset-status/asset-status.enum';
@@ -34,6 +35,12 @@ defineFeature(feature, (test) => {
   beforeAll(() => {
     testServer = getTestServer();
     httpServer = request(testServer.serverApplication.getHttpServer());
+    assetWriteRepository = testServer.serverApplication.get(
+      'AssetWriteRepositoryPort',
+    );
+    assetReadRepository = testServer.serverApplication.get(
+      'AssetReadRepositoryPort',
+    );
   });
 
   afterAll(async () => {
@@ -61,7 +68,7 @@ defineFeature(feature, (test) => {
     then(
       /^I can check that the asset with id "(.*)" is approved$/,
       async (assetId: string) => {
-        const asset = await assetReadRepository.findOneByIdOrThrow(assetId);
+        const asset = await getAssetById(assetReadRepository, assetId);
         expect(asset.getPropsCopy().status).toEqual(AssetStatus.APPROVED);
       },
     );
@@ -95,7 +102,7 @@ defineFeature(feature, (test) => {
     then(
       /^I can check that the asset with id "(.*)" is rejected$/,
       async (assetId: string) => {
-        const asset = await assetReadRepository.findOneByIdOrThrow(assetId);
+        const asset = await getAssetById(assetReadRepository, assetId);
         expect(asset.getPropsCopy().status).toEqual(AssetStatus.REJECTED);
       },
     );
@@ -119,5 +126,12 @@ defineFeature(feature, (test) => {
       );
     }
     return Promise.all(promises);
+  }
+
+  async function getAssetById(
+    assetReadRepository: AssetReadRepositoryPort,
+    assetId: string,
+  ) {
+    return assetReadRepository.findOneByIdOrThrow(new UUID(assetId));
   }
 });

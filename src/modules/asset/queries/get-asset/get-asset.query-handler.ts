@@ -1,5 +1,6 @@
 import { QueryHandlerBase } from '@libs/ddd/domain/base-classes/query-handler.base';
 import { Result } from '@libs/ddd/domain/utils/result.util';
+import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import { AssetEntity } from '@modules/asset/domain/entities/asset.entity';
 import { AssetReadRepositoryPort } from '@modules/asset/ports/asset.repository.port';
 import { GetAssetQuery } from '@modules/asset/queries/get-asset/get-asset.query';
@@ -16,11 +17,11 @@ export class GetAssetQueryHandler extends QueryHandlerBase {
   }
 
   /* Since this is a simple query with no additional business
-     logic involved, it bypasses application's core completely 
+     logic involved, it bypasses application's core completely
      and retrieves assets directly from a repository.
    */
   async handle(query: GetAssetQuery): Promise<Result<AssetEntity>> {
-    const asset = await this.assetRepo.findOneByIdOrThrow(query.id);
+    const asset = await this.assetRepo.findOneByIdOrThrow(new UUID(query.id));
     return Result.ok(asset);
   }
 }
