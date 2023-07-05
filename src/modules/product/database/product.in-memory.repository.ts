@@ -1,0 +1,36 @@
+import { Logger } from '@infrastructure/logger/logger';
+import { InMemoryRepositoryBase } from '@libs/ddd/infrastructure/database/base-classes/in-memory.repository.base';
+import { final } from '@libs/decorators/final.decorator';
+import { ProductOrmEntity } from '@modules/product/database/product.orm-entity';
+import { ProductOrmMapper } from '@modules/product/database/product.orm-mapper';
+import {
+  ProductEntity,
+  ProductProps,
+} from '@modules/product/domain/entities/product.entity';
+import {
+  ProductReadRepositoryPort,
+  ProductWriteRepositoryPort,
+} from '@modules/product/ports/product.repository.port';
+import { GetProductsQuery } from '@modules/product/queries/get-products/get-products.query';
+
+@final
+export class ProductInMemoryRepository
+  extends InMemoryRepositoryBase<ProductEntity, ProductProps, ProductOrmEntity>
+  implements ProductWriteRepositoryPort, ProductReadRepositoryPort
+{
+  constructor() {
+    super(
+      new ProductOrmMapper(ProductEntity, ProductOrmEntity),
+      new Logger('ProductRepository'),
+    );
+  }
+
+  findProducts(query: GetProductsQuery): Promise<ProductEntity[]> {
+    const filteredProducts: ProductOrmEntity[] = this.savedEntities.filter(
+      (productOrmEntity: ProductOrmEntity) =>
+        !query.name || productOrmEntity.name.startsWith(query.name),
+    );
+
+    return Promise.resolve(this.toDomainEntities(filteredProducts));
+  }
+}

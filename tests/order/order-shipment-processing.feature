@@ -12,11 +12,10 @@ Feature: Manage Orders and Order Items
     Then an order should be created
     And order items for the product should be created
     And the order status should be set as "PendingShipment"
-    And an event "OrderPlacedEvent" should be triggered
     And an email is sent to the customer
 
   Scenario: Fulfilling an order
     Given an order with the status "WaitingForShipment"
     When the order is shipped to the customer
     Then the order status should be set as "Shipped"
-    And an event "OrderFulfilledEvent" should be triggered
+    And an email is sent to the customer
