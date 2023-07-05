@@ -28,12 +28,12 @@ export class FakeProductBuilder {
     return this;
   }
 
-  public withName(name: string): FakeProductBuilder {
+  public withName(name?: string): FakeProductBuilder {
     this.name = name;
     return this;
   }
 
-  public withDescription(description: string): FakeProductBuilder {
+  public withDescription(description?: string): FakeProductBuilder {
     this.description = description;
     return this;
   }

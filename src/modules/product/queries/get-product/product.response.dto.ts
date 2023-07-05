@@ -6,6 +6,7 @@ export interface GetProductById {
   id?: string;
   name: string;
   description: string;
+  status: string;
 }
 
 export class ProductResponse extends ResponseBase implements GetProductById {
@@ -21,6 +22,7 @@ export class ProductResponse extends ResponseBase implements GetProductById {
     const props = product.getPropsCopy();
     this.name = props.name;
     this.description = props.description;
+    this.status = props.status;
   }
 
   @ApiProperty({
@@ -34,6 +36,12 @@ export class ProductResponse extends ResponseBase implements GetProductById {
     description: 'Product description',
   })
   description: string;
+
+  @ApiProperty({
+    example: 'product_draft',
+    description: 'Product status',
+  })
+  status: string;
 
 }
 

@@ -1,14 +1,17 @@
 import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import { cleanUpTestData } from '@libs/test-utils/test-db-cleaner';
-import { ProductEntity } from '@modules/product/domain/entities/product.entity';
+import {
+  ProductEntity,
+  ProductProps,
+} from '@modules/product/domain/entities/product.entity';
 import { ProductStatus } from '@modules/product/domain/value-objects/product-status/product-status.enum';
 import {
   ProductReadRepositoryPort,
   ProductWriteRepositoryPort,
 } from '@modules/product/ports/product.repository.port';
 import { HttpStatus } from '@nestjs/common';
-import { FakeProductBuilder } from '@tests/product/fake-product.builder';
 import { getTestServer, TestServer } from '@tests/jestSetupAfterEnv';
+import { FakeProductBuilder } from '@tests/product/fake-product.builder';
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import * as request from 'supertest';
 import { getConnection } from 'typeorm';
@@ -17,13 +20,7 @@ const feature = loadFeature(
   'tests/product/validate-products/validate-products.feature',
 );
 
-type PartialProduct = {
-  id: string;
-  name: string;
-  categoryId: string;
-  status: ProductStatus;
-  ownerId?: string;
-};
+type PartialProduct = Partial<ProductProps>;
 
 defineFeature(feature, (test) => {
   let productWriteRepository: ProductWriteRepositoryPort;
@@ -83,8 +80,8 @@ defineFeature(feature, (test) => {
 
     given(
       'the following products exist:',
-      async (partialProducts: PartialProduct[]) => {
-        await createProducts(partialProducts);
+      async (products: PartialProduct[]) => {
+        await createProducts(products);
       },
     );
 
