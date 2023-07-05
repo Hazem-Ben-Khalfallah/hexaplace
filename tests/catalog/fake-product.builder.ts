@@ -77,7 +77,7 @@ export class FakeProductBuilder {
     }
 
     if (ProductStatus.ARCHIVED === status) {
-      product.markAsDeleted();
+      product.archive();
     }
     return product;
   }

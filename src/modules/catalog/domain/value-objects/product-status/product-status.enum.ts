@@ -5,7 +5,6 @@ export enum ProductStatus {
   APPROVED = 'approved',
   REJECTED = 'rejected',
   ARCHIVED = 'archived',
-  DELETED = 'deleted',
 }
 
 const ENUM_AS_MAP = new Map<string, ProductStatus>(

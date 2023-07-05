@@ -53,6 +53,12 @@ export class ProductEntity extends AggregateRoot<ProductProps> {
     return productEntity;
   }
 
+  validate(): void {
+    if (Guard.isEmpty(this.props.name)) throw new ProductNameRequiredError();
+    if (Guard.isEmpty(this.props.description))
+      throw new ProductDescriptionRequiredError();
+  }
+
   approve(): void {
     this.updateStatusIfApplicable(ProductStatus.APPROVED);
     this.emitEvent(
@@ -70,8 +76,27 @@ export class ProductEntity extends AggregateRoot<ProductProps> {
     );
   }
 
-  markAsDeleted(): void {
+  archive(): void {
     this.updateStatusIfApplicable(ProductStatus.ARCHIVED);
+  }
+
+  deleteorArchive(): void {
+    if (this.isDraft()) {
+      this.emitEvent(
+        new ProductArchivedDomainEvent({
+          aggregateId: this.id.value,
+        }),
+      );
+    }
+    this.emitEvent(
+      new ProductDeletedDomainEvent({
+        aggregateId: this.id.value,
+      }),
+    );
+  }
+
+  private isDraft() {
+    return this.props.status === ProductStatus.DRAFT;
   }
 
   private updateStatusIfApplicable(status: ProductStatus): void {
@@ -79,11 +104,5 @@ export class ProductEntity extends AggregateRoot<ProductProps> {
       throw new ProductAlreadyArchivedError();
     }
     this.props.status = status;
-  }
-
-  validate(): void {
-    if (Guard.isEmpty(this.props.name)) throw new ProductNameRequiredError();
-    if (Guard.isEmpty(this.props.description))
-      throw new ProductDescriptionRequiredError();
   }
 }
