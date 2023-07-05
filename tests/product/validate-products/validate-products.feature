@@ -1,4 +1,4 @@
-Feature: Manage products
+Feature: Validating a product
   As a marketplace owner
   I want to review and validate newly created products
   So that I can ensure the quality and integrity of what is sold in my marketplace
