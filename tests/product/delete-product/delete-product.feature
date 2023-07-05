@@ -6,11 +6,10 @@ Feature: delete products
   Background:
     Given I am logged in as a marketplace owner
     And the following products exist:
-      | id         | name     | status           |
-      | uE93daidQf | product1 | product_approved |
-      | hxrK4YsVDd | product2 | product_rejected |
-      | KPuD21MmCx | product3 | product_draft    |
-      | hXRXMVn1Tl | product5 | product_deleted  |
+      | id         | name     | status   |
+      | uE93daidQf | product1 | approved |
+      | hxrK4YsVDd | product2 | rejected |
+      | KPuD21MmCx | product3 | draft    |
 
   Scenario: Deleting a product if it is draft
     When I delete a product with id "KPuD21MmCx"

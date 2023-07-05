@@ -5,6 +5,7 @@ export const routesV1 = {
     root: productsRoot,
     resourceById: `${productsRoot}/:id`,
     reject: `${productsRoot}/:id/reject`,
-    approve: `${productsRoot}/:id/approve`
+    approve: `${productsRoot}/:id/approve`,
+    delete: `${productsRoot}/:id`
   }
 };

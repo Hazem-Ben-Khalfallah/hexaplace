@@ -63,7 +63,7 @@ defineFeature(feature, (test) => {
 
     when(/^I delete a product with id "(.*)"$/, async (productId: string) => {
       await httpServer
-        .post(`/v1/products/${productId}/delete`)
+        .delete(`/v1/products/${productId}`)
         .expect(HttpStatus.NO_CONTENT);
     });
 
@@ -99,7 +99,7 @@ defineFeature(feature, (test) => {
 
     when(/^I delete a product with id "(.*)"$/, async (productId: string) => {
       await httpServer
-        .post(`/v1/products/${productId}/delete`)
+        .delete(`/v1/products/${productId}`)
         .expect(HttpStatus.NO_CONTENT);
     });
 

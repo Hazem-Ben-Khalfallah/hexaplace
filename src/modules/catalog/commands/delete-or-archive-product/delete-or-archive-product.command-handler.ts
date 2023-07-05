@@ -2,7 +2,6 @@ import { CommandHandlerBase } from '@libs/ddd/domain/base-classes/command-handle
 import { Guard } from '@libs/ddd/domain/guard';
 import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import { NotFoundException } from '@libs/exceptions/not-found.exception';
-import { ApproveProductCommand } from '@modules/catalog/commands/approve-product/approve-product.command';
 import { ProductEntity } from '@modules/catalog/domain/entities/product.entity';
 import { ProductIdInvalidError } from '@modules/catalog/errors/product/product-id-invalid.error';
 import { ProductNotFoundError } from '@modules/catalog/errors/product/product-not-found.error';
@@ -30,7 +29,7 @@ export class DeleteOrArchiveProductCommandHandler extends CommandHandlerBase {
     await this.save(command.correlationId, product);
   }
 
-  private isValidOrThrow(command: ApproveProductCommand) {
+  private isValidOrThrow(command: DeleteOrArchiveProductCommand) {
     if (Guard.isEmpty(command.productId)) throw new ProductIdInvalidError();
   }
 
@@ -40,7 +39,7 @@ export class DeleteOrArchiveProductCommandHandler extends CommandHandlerBase {
       .deleteOrArchive(product);
   }
 
-  private async getProductById(command: ApproveProductCommand) {
+  private async getProductById(command: DeleteOrArchiveProductCommand) {
     try {
       const product = await this.productReadRepository.findOneByIdOrThrow(
         new UUID(command.productId),
