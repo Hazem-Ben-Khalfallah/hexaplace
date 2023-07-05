@@ -16,12 +16,12 @@ Feature: Validating a product
       | HxrhbLNbEM | Product5C | product_rejected |
       | hXRXMVn1Tl | product5d | product_deleted  |
 
-  Scenario: Approving an product
-    When I approve an product with id "KPuD21MmCx"
+  Scenario: Approving a product
+    When I approve a product with id "KPuD21MmCx"
     Then the product with id "KPuD21MmCx" should be marked as approved
     And the seller gets notified
 
-  Scenario: Rejecting an product
-    When I reject an product with id "KPuD21MmCx" for the reason "rejection reason"
+  Scenario: Rejecting a product
+    When I reject a product with id "KPuD21MmCx" for the reason "rejection reason"
     Then the product with id "KPuD21MmCx" should be marked as rejected
     And the seller gets notified

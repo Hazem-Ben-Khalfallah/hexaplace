@@ -48,7 +48,7 @@ defineFeature(feature, (test) => {
     await cleanUpTestData();
   });
 
-  test('Approving an product', ({ when, then, given, and }) => {
+  test('Approving a product', ({ when, then, given, and }) => {
     given(
       'the following products exist:',
       async (partialProducts: PartialProduct[]) => {
@@ -56,7 +56,7 @@ defineFeature(feature, (test) => {
       },
     );
 
-    when(/^I approve an product with id "(.*)"$/, async (productId: string) => {
+    when(/^I approve a product with id "(.*)"$/, async (productId: string) => {
       await httpServer
         .post(`/v1/products/${productId}/approve`)
         .expect(HttpStatus.NO_CONTENT);
@@ -75,7 +75,7 @@ defineFeature(feature, (test) => {
     });
   });
 
-  test('Rejecting an product', ({ when, then, and, given }) => {
+  test('Rejecting a product', ({ when, then, and, given }) => {
     let reason: string;
 
     given(
@@ -86,7 +86,7 @@ defineFeature(feature, (test) => {
     );
 
     when(
-      /^I reject an product with id "(.*)" for the reason "(.*)"$/,
+      /^I reject a product with id "(.*)" for the reason "(.*)"$/,
       async (productId: string, rejectionReason: string) => {
         reason = rejectionReason;
         await httpServer

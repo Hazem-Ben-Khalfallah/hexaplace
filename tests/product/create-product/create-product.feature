@@ -14,4 +14,4 @@ Feature: Create New Product
         Then the product should be created
         And the product should have the defined name
         And the product should have the defined description
-        And the created product should be marked as hidden
+        And the created product should be marked as draft

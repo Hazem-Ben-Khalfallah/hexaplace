@@ -69,7 +69,7 @@ defineFeature(feature, (test) => {
       expect(createdProduct.description).toEqual(product.description);
     });
 
-    and('the created product should be marked as hidden', async () => {
+    and('the created product should be marked as draft', async () => {
       expect(createdProduct.status).toEqual(ProductStatus.DRAFT);
     });
   });
