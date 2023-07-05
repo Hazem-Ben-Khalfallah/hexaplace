@@ -1,5 +1,5 @@
-import { ProductRejectdDomainEvent } from '@modules/product/domain/events/product-rejected.domain-event';
+import { ProductRejectedDomainEvent } from '@modules/product/domain/events/product-rejected.domain-event';
 
 export interface ProductRejectdNotificationGatewayPort {
-  notify(event: ProductRejectdDomainEvent): Promise<void>;
+  notify(event: ProductRejectedDomainEvent): Promise<void>;
 }

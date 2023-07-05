@@ -4,7 +4,7 @@ import { DateVO } from '@libs/ddd/domain/value-objects/date.value-object';
 import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import { ProductApprovedDomainEvent } from '@modules/product/domain/events/product-approved.domain-event';
 import { ProductCreatedDomainEvent } from '@modules/product/domain/events/product-created.domain-event';
-import { ProductRejectdDomainEvent as ProductRejectedDomainEvent } from '@modules/product/domain/events/product-rejected.domain-event';
+import { ProductRejectedDomainEvent as ProductRejectedDomainEvent } from '@modules/product/domain/events/product-rejected.domain-event';
 import { ProductStatus } from '@modules/product/domain/value-objects/product-status/product-status.enum';
 import { ProductAlreadyArchivedError } from '@modules/product/errors/product/product-already-archived-error.error';
 import { ProductDescriptionRequiredError } from '@modules/product/errors/product/product-description-required.error';

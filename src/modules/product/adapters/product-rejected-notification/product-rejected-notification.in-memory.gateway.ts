@@ -1,12 +1,12 @@
-import { ProductRejectdDomainEvent } from '@modules/product/domain/events/product-rejected.domain-event';
-import { ProductRejectdNotificationGatewayPort } from '@modules/product/ports/product-rejected-notification.gateway.port';
+import { ProductRejectedDomainEvent } from '@modules/product/domain/events/product-rejected.domain-event';
+import { ProductRejectdNotificationGatewayPort as ProductRejectedNotificationGatewayPort } from '@modules/product/ports/product-rejected-notification.gateway.port';
 
-export class ProductRejectdNotificationInMemoryGateway
-  implements ProductRejectdNotificationGatewayPort
+export class ProductRejectedNotificationInMemoryGateway
+  implements ProductRejectedNotificationGatewayPort
 {
-  notifications: ProductRejectdDomainEvent[] = [];
+  notifications: ProductRejectedDomainEvent[] = [];
 
-  async notify(event: ProductRejectdDomainEvent): Promise<void> {
+  async notify(event: ProductRejectedDomainEvent): Promise<void> {
     this.notifications.push(event);
     await Promise.resolve();
   }
@@ -14,7 +14,7 @@ export class ProductRejectdNotificationInMemoryGateway
   hasBeenNotifiedOnce(productId: string): boolean {
     return (
       this.notifications.filter(
-        (event: ProductRejectdDomainEvent) => event.aggregateId === productId,
+        (event: ProductRejectedDomainEvent) => event.aggregateId === productId,
       ).length === 1
     );
   }
