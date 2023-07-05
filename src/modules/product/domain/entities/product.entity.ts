@@ -42,7 +42,7 @@ export class ProductEntity extends AggregateRoot<ProductProps> {
       props,
     });
 
-    productEntity.addEvent(
+    productEntity.emitEvent(
       new ProductCreatedDomainEvent({
         aggregateId: id.value,
         ...props,
@@ -54,12 +54,12 @@ export class ProductEntity extends AggregateRoot<ProductProps> {
 
   approve(): void {
     this.updateStatusIfApplicable(ProductStatus.APPROVED);
-    this.addEvent(new ProductApprovedDomainEvent({ aggregateId: this.id.value }));
+    this.emitEvent(new ProductApprovedDomainEvent({ aggregateId: this.id.value }));
   }
 
   reject(reason: string): void {
     this.updateStatusIfApplicable(ProductStatus.REJECTED);
-    this.addEvent(
+    this.emitEvent(
       new ProductRejectedDomainEvent({
         aggregateId: this.id.value,
         reason,
