@@ -41,11 +41,11 @@ export abstract class InMemoryRepositoryBase<
     return entities.map((e: OEntity) => this.mapper.toDomainEntity(e));
   }
 
-  delete(entity: TEntity): Promise<TEntity> {
+  delete(entity: TEntity): Promise<void> {
     this.savedEntities = this.savedEntities.filter(
       (e: OEntity) => e.id !== entity.id.value,
     );
-    return Promise.resolve(entity);
+    return Promise.resolve();
   }
 
   async findOneByIdOrThrow(id: ID): Promise<TEntity> {
@@ -104,11 +104,11 @@ export abstract class InMemoryRepositoryBase<
     return this.mapper.toDomainEntity(ormEntity);
   }
 
-  saveMultiple(entities: TEntity[]): Promise<TEntity[]> {
+  saveMultiple(entities: TEntity[]): Promise<void> {
     entities.forEach((e: TEntity) => {
       this.savedEntities.push(this.mapper.toOrmEntity(e));
     });
-    return Promise.resolve(this.toDomainEntities(this.savedEntities));
+    return Promise.resolve();
   }
 
   setCorrelationId(correlationId: string): this {

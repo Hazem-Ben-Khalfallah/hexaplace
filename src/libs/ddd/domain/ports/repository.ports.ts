@@ -19,7 +19,7 @@ export interface Save<Entity> {
 }
 
 export interface SaveMultiple<Entity> {
-  saveMultiple(entities: Entity[]): Promise<Entity[]>;
+  saveMultiple(entities: Entity[]): Promise<void>;
 }
 
 export interface FindOne<Entity, EntityProps> {
@@ -71,7 +71,7 @@ export interface FindManyPaginated<
 }
 
 export interface DeleteOne<Entity> {
-  delete(entity: Entity): Promise<Entity>;
+  delete(entity: Entity): Promise<void>;
 }
 
 export interface WriteRepositoryPort<Entity>

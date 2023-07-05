@@ -26,7 +26,7 @@ export class DeleteOrArchiveProductCommandHandler extends CommandHandlerBase {
   async handle(command: DeleteOrArchiveProductCommand): Promise<void> {
     this.isValidOrThrow(command);
     const product = await this.getProductById(command);
-    product.deleteorArchive();
+    product.deleteOrArchive();
     await this.save(command.correlationId, product);
   }
 
@@ -37,7 +37,7 @@ export class DeleteOrArchiveProductCommandHandler extends CommandHandlerBase {
   private async save(correlationId: string, product: ProductEntity) {
     await this.unitOfWork
       .getWriteProductRepository(correlationId)
-      .save(product);
+      .deleteOrArchive(product);
   }
 
   private async getProductById(command: ApproveProductCommand) {

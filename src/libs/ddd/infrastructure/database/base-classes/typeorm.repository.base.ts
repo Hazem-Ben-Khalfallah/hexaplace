@@ -60,12 +60,12 @@ export abstract class TypeormRepositoryBase<
     return this.mapper.toDomainEntity(result);
   }
 
-  async saveMultiple(entities: Entity[]): Promise<Entity[]> {
+  async saveMultiple(entities: Entity[]): Promise<void> {
     const ormEntities = entities.map((entity) => {
       entity.validate();
       return this.mapper.toOrmEntity(entity);
     });
-    const result = await this.repository.save(ormEntities);
+    await this.repository.save(ormEntities);
     await Promise.all(
       entities.map((entity) =>
         DomainEvents.publishEvents(entity.id, this.logger, this.correlationId),
@@ -74,7 +74,6 @@ export abstract class TypeormRepositoryBase<
     this.logger.debug(
       `[${entities}]: persisted ${entities.map((entity) => entity.id)}`,
     );
-    return result.map((entity) => this.mapper.toDomainEntity(entity));
   }
 
   async findOne(
@@ -145,7 +144,7 @@ export abstract class TypeormRepositoryBase<
     return result;
   }
 
-  async delete(entity: Entity): Promise<Entity> {
+  async delete(entity: Entity): Promise<void> {
     entity.validate();
     await this.repository.remove(this.mapper.toOrmEntity(entity));
     await DomainEvents.publishEvents(
@@ -156,7 +155,6 @@ export abstract class TypeormRepositoryBase<
     this.logger.debug(
       `[${entity.constructor.name}] deleted ${entity.id.value}`,
     );
-    return entity;
   }
 
   protected correlationId?: string;

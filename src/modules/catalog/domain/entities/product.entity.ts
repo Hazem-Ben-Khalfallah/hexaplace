@@ -78,16 +78,23 @@ export class ProductEntity extends AggregateRoot<ProductProps> {
 
   archive(): void {
     this.updateStatusIfApplicable(ProductStatus.ARCHIVED);
+    this.emitEvent(
+      new ProductArchivedDomainEvent({
+        aggregateId: this.id.value,
+      }),
+    );
   }
 
-  deleteorArchive(): void {
+  deleteOrArchive(): void {
     if (this.isDraft()) {
-      this.emitEvent(
-        new ProductArchivedDomainEvent({
-          aggregateId: this.id.value,
-        }),
-      );
+      this.markAsToDelete();
+      return;
     }
+    this.archive();
+  }
+
+  private markAsToDelete() {
+    this.updateStatusIfApplicable(ProductStatus.DELETED);
     this.emitEvent(
       new ProductDeletedDomainEvent({
         aggregateId: this.id.value,

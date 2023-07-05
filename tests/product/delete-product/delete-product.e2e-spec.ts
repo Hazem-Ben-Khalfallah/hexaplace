@@ -70,9 +70,9 @@ defineFeature(feature, (test) => {
     then(
       /^the product with id "(.*)" should not be available anymore$/,
       async (productId: string) => {
-        expect(getProductById(productReadRepository, productId)).toThrow(
-          NotFoundException,
-        );
+        expect(
+          getProductById(productReadRepository, productId),
+        ).rejects.toThrow(NotFoundException);
       },
     );
   });

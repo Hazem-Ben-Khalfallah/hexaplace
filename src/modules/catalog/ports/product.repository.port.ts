@@ -9,7 +9,10 @@ import {
 import { GetProductsQuery } from '@modules/catalog/queries/get-products/get-products.query';
 import { ProductId } from '../domain/value-objects/product-id.value-object';
 
-export type ProductWriteRepositoryPort = WriteRepositoryPort<ProductEntity>;
+export interface ProductWriteRepositoryPort
+  extends WriteRepositoryPort<ProductEntity> {
+  deleteOrArchive(product: ProductEntity): Promise<void>;
+}
 
 export interface ProductReadRepositoryPort
   extends ReadRepositoryPort<ProductEntity, ProductProps> {
