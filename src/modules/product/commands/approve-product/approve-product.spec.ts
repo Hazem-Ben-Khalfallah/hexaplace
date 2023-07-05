@@ -2,7 +2,7 @@ import { Logger } from '@infrastructure/logger/logger';
 import { DateVO } from '@libs/ddd/domain/value-objects/date.value-object';
 import { ULID } from '@libs/ddd/domain/value-objects/ulid.value-object';
 import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
-import { ProductApprovedNotificationInMemoryGateway } from '@modules/product/adapters/product-approved-notification/product-approved-notification.in-memory.gateway';
+import { NotificationInMemoryGateway } from '@modules/product/adapters/notification.in-memory.adapter';
 import { ApproveProductCommand } from '@modules/product/commands/approve-product/approve-product.command';
 import { ApproveProductCommandHandler } from '@modules/product/commands/approve-product/approve-product.command-handler';
 import { ProductInMemoryUnitOfWork } from '@modules/product/database/product.in-memory.unit-of-work';
@@ -69,13 +69,12 @@ describe('approve product', () => {
 
   describe('when approve product is allowed', () => {
     let productApprovedEventHandler: ProductApprovedDomainEventHandler;
-    let productApprovedInMemoryNotificationGateway: ProductApprovedNotificationInMemoryGateway;
+    let notificationGateway: NotificationInMemoryGateway;
     beforeEach(() => {
-      productApprovedInMemoryNotificationGateway =
-        new ProductApprovedNotificationInMemoryGateway();
+      notificationGateway = new NotificationInMemoryGateway();
       productApprovedEventHandler = new ProductApprovedDomainEventHandler(
         new Logger(),
-        productApprovedInMemoryNotificationGateway,
+        notificationGateway,
       );
       productApprovedEventHandler.listen();
     });
@@ -104,9 +103,7 @@ describe('approve product', () => {
         ProductStatus.APPROVED,
       );
       expect(
-        productApprovedInMemoryNotificationGateway.hasBeenNotifiedOnce(
-          approvedProduct.id.value,
-        ),
+        notificationGateway.hasBeenNotifiedOnce(approvedProduct.id.value),
       ).toBeTruthy();
     });
   });

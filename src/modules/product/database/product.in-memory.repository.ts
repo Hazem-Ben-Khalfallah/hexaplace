@@ -4,12 +4,12 @@ import { final } from '@libs/decorators/final.decorator';
 import { ProductOrmEntity } from '@modules/product/database/product.orm-entity';
 import { ProductOrmMapper } from '@modules/product/database/product.orm-mapper';
 import {
-  ProductEntity,
-  ProductProps,
+ProductEntity,
+ProductProps
 } from '@modules/product/domain/entities/product.entity';
 import {
-  ProductReadRepositoryPort,
-  ProductWriteRepositoryPort,
+ProductReadRepositoryPort,
+ProductWriteRepositoryPort
 } from '@modules/product/ports/product.repository.port';
 import { GetProductsQuery } from '@modules/product/queries/get-products/get-products.query';
 

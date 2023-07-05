@@ -1,12 +1,12 @@
 import { DomainEventHandler } from '@libs/ddd/domain/domain-events';
 import { LoggerPort } from '@libs/ddd/domain/ports/logger.port';
 import { ProductRejectedDomainEvent } from '@modules/product/domain/events/product-rejected.domain-event';
-import { ProductRejectdNotificationGatewayPort as ProductRejectedNotificationGatewayPort } from '@modules/product/ports/product-rejected-notification.gateway.port';
+import { ProductRejectedNotificationPort } from '@modules/product/ports/product-rejected-notification.port';
 
-export class ProductRejectdDomainEventHandler extends DomainEventHandler {
+export class ProductRejectedDomainEventHandler extends DomainEventHandler {
   constructor(
     private readonly logger: LoggerPort,
-    private readonly productRejectedNotificationGatewayPort: ProductRejectedNotificationGatewayPort,
+    private readonly productRejectedNotificationPort: ProductRejectedNotificationPort,
   ) {
     super(ProductRejectedDomainEvent);
     logger.setContext(this.constructor.name);
@@ -17,6 +17,6 @@ export class ProductRejectdDomainEventHandler extends DomainEventHandler {
       `Sending product rejected notification [${JSON.stringify(event)}]`,
     );
 
-    await this.productRejectedNotificationGatewayPort.notify(event);
+    await this.productRejectedNotificationPort.send(event);
   }
 }

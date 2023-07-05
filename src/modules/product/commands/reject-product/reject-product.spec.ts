@@ -2,7 +2,7 @@ import { Logger } from '@infrastructure/logger/logger';
 import { DateVO } from '@libs/ddd/domain/value-objects/date.value-object';
 import { ULID } from '@libs/ddd/domain/value-objects/ulid.value-object';
 import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
-import { ProductRejectedNotificationInMemoryGateway } from '@modules/product/adapters/product-rejected-notification/product-rejected-notification.in-memory.gateway';
+import { NotificationInMemoryGateway } from '@modules/product/adapters/notification.in-memory.adapter';
 import { RejectProductCommand } from '@modules/product/commands/reject-product/reject-product.command';
 import { RejectProductCommandHandler } from '@modules/product/commands/reject-product/reject-product.command-handler';
 import { ProductInMemoryUnitOfWork } from '@modules/product/database/product.in-memory.unit-of-work';
@@ -10,7 +10,7 @@ import { ProductStatus } from '@modules/product/domain/value-objects/product-sta
 import { ProductAlreadyArchivedError } from '@modules/product/errors/product/product-already-archived-error.error';
 import { ProductIdInvalidError } from '@modules/product/errors/product/product-id-invalid.error';
 import { ProductNotFoundError } from '@modules/product/errors/product/product-not-found.error';
-import { ProductRejectdDomainEventHandler as ProductRejectedDomainEventHandler } from '@modules/product/event-handlers/product-rejected.domain-event-handler';
+import { ProductRejectedDomainEventHandler } from '@modules/product/event-handlers/product-rejected.domain-event-handler';
 import { FakeProductBuilder } from '@tests/product/fake-product.builder';
 
 describe('reject product', () => {
@@ -72,13 +72,12 @@ describe('reject product', () => {
 
   describe('when reject product is allowed', () => {
     let productRejectedEventHandler: ProductRejectedDomainEventHandler;
-    let productRejectdInMemoryNotificationGateway: ProductRejectedNotificationInMemoryGateway;
+    let notificationGateway: NotificationInMemoryGateway;
     beforeEach(() => {
-      productRejectdInMemoryNotificationGateway =
-        new ProductRejectedNotificationInMemoryGateway();
+      notificationGateway = new NotificationInMemoryGateway();
       productRejectedEventHandler = new ProductRejectedDomainEventHandler(
         new Logger(),
-        productRejectdInMemoryNotificationGateway,
+        notificationGateway,
       );
       productRejectedEventHandler.listen();
     });
@@ -104,11 +103,11 @@ describe('reject product', () => {
       const rejectdProduct = await productInMemoryUnitOfWork
         .getReadProductRepository()
         .findOneByIdOrThrow(product.id as UUID);
-      expect(rejectdProduct.getPropsCopy().status).toEqual(ProductStatus.REJECTED);
+      expect(rejectdProduct.getPropsCopy().status).toEqual(
+        ProductStatus.REJECTED,
+      );
       expect(
-        productRejectdInMemoryNotificationGateway.hasBeenNotifiedOnce(
-          rejectdProduct.id.value,
-        ),
+        notificationGateway.hasBeenNotifiedOnce(rejectdProduct.id.value),
       ).toBeTruthy();
     });
   });

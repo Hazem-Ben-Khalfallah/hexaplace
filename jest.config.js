@@ -19,7 +19,7 @@ module.exports = {
     '.orm-repository.ts',
     '.write-repository.ts',
     '.unit-of-work.ts',
-    '.gateway.ts',
+    '.adapter.ts',
     '<rootDir>/src/main.ts',
     '<rootDir>/src/migration.ts',
     '<rootDir>/src/libs/',
