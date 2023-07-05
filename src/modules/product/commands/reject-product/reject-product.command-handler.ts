@@ -3,6 +3,7 @@ import { Guard } from '@libs/ddd/domain/guard';
 import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import { NotFoundException } from '@libs/exceptions/not-found.exception';
 import { RejectProductCommand } from '@modules/product/commands/reject-product/reject-product.command';
+import { ProductEntity } from '@modules/product/domain/entities/product.entity';
 import { ProductIdInvalidError } from '@modules/product/errors/product/product-id-invalid.error';
 import { ProductNotFoundError } from '@modules/product/errors/product/product-not-found.error';
 import { ProductReadRepositoryPort } from '@modules/product/ports/product.repository.port';
@@ -22,22 +23,31 @@ export class RejectProductCommandHandler extends CommandHandlerBase {
   }
 
   async handle(command: RejectProductCommand): Promise<void> {
+    this.isValidOrThrow(command);
+    const product = await this.getProductById(command);
+    product.reject(command.reason);
+    await this.save(command.correlationId, product);
+  }
+
+  private isValidOrThrow(command: RejectProductCommand) {
     if (Guard.isEmpty(command.productId)) throw new ProductIdInvalidError();
+  }
+
+  private async getProductById(command: RejectProductCommand) {
     try {
-      const product = await this.getProductById(command);
-      product.reject(command.reason);
-      await this.unitOfWork
-        .getWriteProductRepository(command.correlationId)
-        .save(product);
+      const product = await this.productReadRepository.findOneByIdOrThrow(
+        new UUID(command.productId),
+      );
+      return product;
     } catch (error) {
       if (error instanceof NotFoundException) throw new ProductNotFoundError();
       throw error;
     }
   }
 
-  private async getProductById(command: RejectProductCommand) {
-    return this.productReadRepository.findOneByIdOrThrow(
-      new UUID(command.productId),
-    );
+  private async save(correlationId: string, product: ProductEntity) {
+    await this.unitOfWork
+      .getWriteProductRepository(correlationId)
+      .save(product);
   }
 }

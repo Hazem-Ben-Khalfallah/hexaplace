@@ -1,10 +1,10 @@
 import { ArgumentInvalidException } from '@libs/exceptions/argument-invalid.exception';
 
 export enum ProductStatus {
-  DRAFT = 'product_draft',
-  APPROVED = 'product_approved',
-  REJECTED = 'product_rejected',
-  DELETED = 'product_deleted',
+  DRAFT = 'draft',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
+  ARCHIVED = 'archived',
 }
 
 const ENUM_AS_MAP = new Map<string, ProductStatus>(

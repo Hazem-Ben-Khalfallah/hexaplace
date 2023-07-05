@@ -20,7 +20,7 @@ describe('Product status type conversion to enum', () => {
 
   it('should return valid enum value', () => {
     // given
-    const value = 'product_rejected';
+    const value = 'rejected';
 
     // when
     const type = toEnum(value);

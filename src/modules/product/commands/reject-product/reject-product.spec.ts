@@ -7,7 +7,7 @@ import { RejectProductCommand } from '@modules/product/commands/reject-product/r
 import { RejectProductCommandHandler } from '@modules/product/commands/reject-product/reject-product.command-handler';
 import { ProductInMemoryUnitOfWork } from '@modules/product/database/product.in-memory.unit-of-work';
 import { ProductStatus } from '@modules/product/domain/value-objects/product-status/product-status.enum';
-import { AlreadyDeletedProductError } from '@modules/product/errors/product/already-deleted-product-error.error';
+import { ProductAlreadyArchivedError } from '@modules/product/errors/product/product-already-archived-error.error';
 import { ProductIdInvalidError } from '@modules/product/errors/product/product-id-invalid.error';
 import { ProductNotFoundError } from '@modules/product/errors/product/product-not-found.error';
 import { ProductRejectdDomainEventHandler } from '@modules/product/event-handlers/product-rejected.domain-event-handler';
@@ -52,10 +52,10 @@ describe('reject product', () => {
         .rejects.toThrow(ProductNotFoundError);
     });
 
-    it('should return an error if product is marked as deleted', async () => {
+    it('should return an error if product is marked as archived', async () => {
       // given
       const product = await getProductBuilder()
-        .withStatus(ProductStatus.DELETED)
+        .withStatus(ProductStatus.ARCHIVED)
         .build();
       const rejectProductCommand = new RejectProductCommand({
         productId: product.id.value,
@@ -66,7 +66,7 @@ describe('reject product', () => {
         rejectProductCommandHandler.execute(rejectProductCommand),
       )
         // then
-        .rejects.toThrow(AlreadyDeletedProductError);
+        .rejects.toThrow(ProductAlreadyArchivedError);
     });
   });
 

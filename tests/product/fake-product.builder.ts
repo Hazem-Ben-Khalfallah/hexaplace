@@ -70,7 +70,7 @@ export class FakeProductBuilder {
       product.reject('Rejection reason');
     }
 
-    if (ProductStatus.DELETED === status) {
+    if (ProductStatus.ARCHIVED === status) {
       product.markAsDeleted();
     }
     return product;

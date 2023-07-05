@@ -6,7 +6,7 @@ import { ProductApprovedDomainEvent } from '@modules/product/domain/events/produ
 import { ProductCreatedDomainEvent } from '@modules/product/domain/events/product-created.domain-event';
 import { ProductRejectdDomainEvent } from '@modules/product/domain/events/product-rejected.domain-event';
 import { ProductStatus } from '@modules/product/domain/value-objects/product-status/product-status.enum';
-import { AlreadyDeletedProductError } from '@modules/product/errors/product/already-deleted-product-error.error';
+import { ProductAlreadyArchivedError } from '@modules/product/errors/product/product-already-archived-error.error';
 import { ProductDescriptionRequiredError } from '@modules/product/errors/product/product-description-required.error';
 import { ProductNameRequiredError } from '@modules/product/errors/product/product-name-required.error';
 
@@ -53,12 +53,12 @@ export class ProductEntity extends AggregateRoot<ProductProps> {
   }
 
   approve(): void {
-    this.changeStatusTo(ProductStatus.APPROVED);
+    this.updateStatusIfApplicable(ProductStatus.APPROVED);
     this.addEvent(new ProductApprovedDomainEvent({ aggregateId: this.id.value }));
   }
 
   reject(reason: string): void {
-    this.changeStatusTo(ProductStatus.REJECTED);
+    this.updateStatusIfApplicable(ProductStatus.REJECTED);
     this.addEvent(
       new ProductRejectdDomainEvent({
         aggregateId: this.id.value,
@@ -68,12 +68,12 @@ export class ProductEntity extends AggregateRoot<ProductProps> {
   }
 
   markAsDeleted(): void {
-    this.changeStatusTo(ProductStatus.DELETED);
+    this.updateStatusIfApplicable(ProductStatus.ARCHIVED);
   }
 
-  private changeStatusTo(status: ProductStatus): void {
-    if (this.props.status === ProductStatus.DELETED) {
-      throw new AlreadyDeletedProductError();
+  private updateStatusIfApplicable(status: ProductStatus): void {
+    if (this.props.status === ProductStatus.ARCHIVED) {
+      throw new ProductAlreadyArchivedError();
     }
     this.props.status = status;
   }

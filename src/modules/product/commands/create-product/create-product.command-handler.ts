@@ -18,9 +18,12 @@ export class CreateProductCommandHandler extends CommandHandlerBase {
     const product = ProductEntity.create({
       ...command,
     });
+    await this.save(command.correlationId, product);
+  }
 
+  private async save(correlationId: string, product: ProductEntity) {
     await this.unitOfWork
-      .getWriteProductRepository(command.correlationId)
+      .getWriteProductRepository(correlationId)
       .save(product);
   }
 }

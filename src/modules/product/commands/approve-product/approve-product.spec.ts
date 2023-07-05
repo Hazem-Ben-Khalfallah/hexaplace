@@ -7,7 +7,7 @@ import { ApproveProductCommand } from '@modules/product/commands/approve-product
 import { ApproveProductCommandHandler } from '@modules/product/commands/approve-product/approve-product.command-handler';
 import { ProductInMemoryUnitOfWork } from '@modules/product/database/product.in-memory.unit-of-work';
 import { ProductStatus } from '@modules/product/domain/value-objects/product-status/product-status.enum';
-import { AlreadyDeletedProductError } from '@modules/product/errors/product/already-deleted-product-error.error';
+import { ProductAlreadyArchivedError } from '@modules/product/errors/product/product-already-archived-error.error';
 import { ProductIdInvalidError } from '@modules/product/errors/product/product-id-invalid.error';
 import { ProductNotFoundError } from '@modules/product/errors/product/product-not-found.error';
 import { ProductApprovedDomainEventHandler } from '@modules/product/event-handlers/product-approved.domain-event-handler';
@@ -50,10 +50,10 @@ describe('approve product', () => {
         .rejects.toThrow(ProductNotFoundError);
     });
 
-    it('should return an error if product is marked as deleted', async () => {
+    it('should return an error if product is marked as archived', async () => {
       // given
       const product = await getProductBuilder()
-        .withStatus(ProductStatus.DELETED)
+        .withStatus(ProductStatus.ARCHIVED)
         .build();
       const approveProductCommand = new ApproveProductCommand({
         productId: product.id.value,
@@ -63,7 +63,7 @@ describe('approve product', () => {
         approveProductCommandHandler.execute(approveProductCommand),
       )
         // then
-        .rejects.toThrow(AlreadyDeletedProductError);
+        .rejects.toThrow(ProductAlreadyArchivedError);
     });
   });
 
@@ -100,7 +100,9 @@ describe('approve product', () => {
       const approvedProduct = await productInMemoryUnitOfWork
         .getReadProductRepository()
         .findOneByIdOrThrow(product.id as UUID);
-      expect(approvedProduct.getPropsCopy().status).toEqual(ProductStatus.APPROVED);
+      expect(approvedProduct.getPropsCopy().status).toEqual(
+        ProductStatus.APPROVED,
+      );
       expect(
         productApprovedInMemoryNotificationGateway.hasBeenNotifiedOnce(
           approvedProduct.id.value,
