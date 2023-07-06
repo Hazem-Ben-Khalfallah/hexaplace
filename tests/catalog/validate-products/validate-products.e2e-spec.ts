@@ -1,18 +1,18 @@
-import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import { cleanUpTestData } from '@libs/test-utils/test-db-cleaner';
 import {
-  ProductEntity,
-  ProductProps,
+ProductEntity,
+ProductProps
 } from '@modules/catalog/domain/entities/product.entity';
+import { ProductId } from '@modules/catalog/domain/value-objects/product-id.value-object';
 import { ProductStatus } from '@modules/catalog/domain/value-objects/product-status/product-status.enum';
 import {
-  ProductReadRepositoryPort,
-  ProductWriteRepositoryPort,
+ProductReadRepositoryPort,
+ProductWriteRepositoryPort
 } from '@modules/catalog/ports/product.repository.port';
 import { HttpStatus } from '@nestjs/common';
-import { getTestServer, TestServer } from '@tests/jestSetupAfterEnv';
 import { FakeProductBuilder } from '@tests/catalog/fake-product.builder';
-import { defineFeature, loadFeature } from 'jest-cucumber';
+import { getTestServer,TestServer } from '@tests/jestSetupAfterEnv';
+import { defineFeature,loadFeature } from 'jest-cucumber';
 import * as request from 'supertest';
 import { getConnection } from 'typeorm';
 
@@ -20,7 +20,7 @@ const feature = loadFeature(
   'tests/catalog/validate-products/validate-products.feature',
 );
 
-type PartialProduct = Partial<ProductProps>;
+type PartialProduct = Partial<ProductProps> & { id: string };
 
 defineFeature(feature, (test) => {
   let productWriteRepository: ProductWriteRepositoryPort;
@@ -129,6 +129,6 @@ defineFeature(feature, (test) => {
     productReadRepository: ProductReadRepositoryPort,
     productId: string,
   ) {
-    return productReadRepository.findOneByIdOrThrow(new UUID(productId));
+    return productReadRepository.findOneByIdOrThrow(new ProductId(productId));
   }
 });

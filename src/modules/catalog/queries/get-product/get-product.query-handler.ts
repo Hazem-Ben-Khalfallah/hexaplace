@@ -1,7 +1,7 @@
 import { QueryHandlerBase } from '@libs/ddd/domain/base-classes/query-handler.base';
 import { Result } from '@libs/ddd/domain/utils/result.util';
-import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import { ProductEntity } from '@modules/catalog/domain/entities/product.entity';
+import { ProductId } from '@modules/catalog/domain/value-objects/product-id.value-object';
 import { ProductReadRepositoryPort } from '@modules/catalog/ports/product.repository.port';
 import { GetProductQuery } from '@modules/catalog/queries/get-product/get-product.query';
 import { Inject } from '@nestjs/common';
@@ -21,7 +21,9 @@ export class GetProductQueryHandler extends QueryHandlerBase {
      and retrieves products directly from a repository.
    */
   async handle(query: GetProductQuery): Promise<Result<ProductEntity>> {
-    const product = await this.productRepo.findOneByIdOrThrow(new UUID(query.id));
+    const product = await this.productRepo.findOneByIdOrThrow(
+      new ProductId(query.id),
+    );
     return Result.ok(product);
   }
 }

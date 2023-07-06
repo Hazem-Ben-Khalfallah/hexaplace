@@ -1,7 +1,7 @@
-import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import { cleanUpTestData } from '@libs/test-utils/test-db-cleaner';
 import { CreateProduct } from '@modules/catalog/commands/create-product/create-product.request.dto';
 import { ProductProps } from '@modules/catalog/domain/entities/product.entity';
+import { ProductId } from '@modules/catalog/domain/value-objects/product-id.value-object';
 import { ProductStatus } from '@modules/catalog/domain/value-objects/product-status/product-status.enum';
 import { GetProductById } from '@modules/catalog/queries/get-product/product.response.dto';
 import { getTestServer, TestServer } from '@tests/jestSetupAfterEnv';
@@ -43,7 +43,7 @@ defineFeature(feature, (test) => {
     when(
       'I enter the following product details:',
       async (products: PartialProduct[]) => {
-        product.id = UUID.generate().value;
+        product.id = ProductId.generate().value;
         product.name = products[0].name;
         product.description = products[0].description;
       },

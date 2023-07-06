@@ -1,11 +1,11 @@
 import { Logger } from '@infrastructure/logger/logger';
 import { DateVO } from '@libs/ddd/domain/value-objects/date.value-object';
 import { ULID } from '@libs/ddd/domain/value-objects/ulid.value-object';
-import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import { NotificationInMemoryGateway } from '@modules/catalog/adapters/notification.in-memory.adapter';
 import { RejectProductCommand } from '@modules/catalog/commands/reject-product/reject-product.command';
 import { RejectProductCommandHandler } from '@modules/catalog/commands/reject-product/reject-product.command-handler';
 import { ProductInMemoryUnitOfWork } from '@modules/catalog/database/product.in-memory.unit-of-work';
+import { ProductId } from '@modules/catalog/domain/value-objects/product-id.value-object';
 import { ProductStatus } from '@modules/catalog/domain/value-objects/product-status/product-status.enum';
 import { ProductAlreadyArchivedError } from '@modules/catalog/errors/product/product-already-archived-error.error';
 import { ProductIdInvalidError } from '@modules/catalog/errors/product/product-id-invalid.error';
@@ -43,7 +43,7 @@ describe('reject product', () => {
     it('should return an error if product is not found', async () => {
       // given
       const rejectProductCommand = new RejectProductCommand({
-        productId: UUID.generate().value,
+        productId: ProductId.generate().value,
         reason: 'some reason',
       });
       // when
@@ -102,7 +102,7 @@ describe('reject product', () => {
       // then
       const rejectdProduct = await productInMemoryUnitOfWork
         .getReadProductRepository()
-        .findOneByIdOrThrow(product.id as UUID);
+        .findOneByIdOrThrow(product.id as ProductId);
       expect(rejectdProduct.getPropsCopy().status).toEqual(
         ProductStatus.REJECTED,
       );

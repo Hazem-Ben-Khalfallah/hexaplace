@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { DateVO } from '@libs/ddd/domain/value-objects/date.value-object';
 import { ProductEntity } from '@modules/catalog/domain/entities/product.entity';
+import { ProductId } from '@modules/catalog/domain/value-objects/product-id.value-object';
 import { ProductStatus } from '@modules/catalog/domain/value-objects/product-status/product-status.enum';
 import { ProductWriteRepositoryPort } from '@modules/catalog/ports/product.repository.port';
 
@@ -15,7 +16,9 @@ export class FakeProductBuilder {
 
   private createdDate?: DateVO;
 
-  private constructor(private productWriteRepository: ProductWriteRepositoryPort) {}
+  private constructor(
+    private productWriteRepository: ProductWriteRepositoryPort,
+  ) {}
 
   public static builder(
     productWriteRepository: ProductWriteRepositoryPort,
@@ -50,7 +53,7 @@ export class FakeProductBuilder {
 
   async build(): Promise<ProductEntity> {
     let productEntity: ProductEntity = ProductEntity.create({
-      id: this.id || faker.datatype.uuid(),
+      id: this.id || ProductId.generate().value,
       createdDate: this.createdDate || undefined,
       name: this.name || faker.commerce.productName(),
       description: this.description || faker.commerce.productDescription(),
@@ -61,7 +64,10 @@ export class FakeProductBuilder {
     return this.productWriteRepository.save(productEntity);
   }
 
-  private changeStatus(product: ProductEntity, status?: ProductStatus): ProductEntity {
+  private changeStatus(
+    product: ProductEntity,
+    status?: ProductStatus,
+  ): ProductEntity {
     if (ProductStatus.APPROVED === status) {
       product.approve();
     }

@@ -1,6 +1,5 @@
 import { LoggerPort } from '@libs/ddd/domain/ports/logger.port';
 import { QueryParams } from '@libs/ddd/domain/ports/repository.ports';
-import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import {
   TypeormRepositoryBase,
   WhereCondition,
@@ -18,6 +17,7 @@ import { GetProductsQuery } from '@modules/catalog/queries/get-products/get-prod
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ProductId } from '../domain/value-objects/product-id.value-object';
 
 @Injectable()
 @final
@@ -40,7 +40,7 @@ export class ProductOrmRepository
     );
   }
 
-  async findOneByIdOrThrow(id: UUID): Promise<ProductEntity> {
+  async findOneByIdOrThrow(id: ProductId): Promise<ProductEntity> {
     return super.findOneByIdOrThrow(id);
   }
 

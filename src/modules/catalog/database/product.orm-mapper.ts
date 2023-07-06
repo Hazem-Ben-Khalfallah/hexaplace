@@ -1,4 +1,3 @@
-import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import {
   EntityProps,
   OrmEntityProps,
@@ -10,6 +9,7 @@ import {
   ProductProps,
 } from '@modules/catalog/domain/entities/product.entity';
 import { toEnum } from '@modules/catalog/domain/value-objects/product-status/product-status.enum';
+import { ProductId } from '../domain/value-objects/product-id.value-object';
 
 export class ProductOrmMapper extends OrmMapper<ProductEntity, ProductOrmEntity> {
   protected toOrmProps(entity: ProductEntity): OrmEntityProps<ProductOrmEntity> {
@@ -23,7 +23,7 @@ export class ProductOrmMapper extends OrmMapper<ProductEntity, ProductOrmEntity>
   }
 
   protected toDomainProps(ormEntity: ProductOrmEntity): EntityProps<ProductProps> {
-    const id = new UUID(ormEntity.id);
+    const id = new ProductId(ormEntity.id);
     const props: ProductProps = {
       name: ormEntity.name,
       description: ormEntity.description,
