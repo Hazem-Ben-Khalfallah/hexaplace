@@ -4,21 +4,21 @@ import { cleanUpTestData } from '@libs/test-utils/test-db-cleaner';
 import {
   ProductEntity,
   ProductProps,
-} from '@modules/product/domain/entities/product.entity';
-import { ProductStatus } from '@modules/product/domain/value-objects/product-status/product-status.enum';
+} from '@modules/catalog/domain/entities/product.entity';
+import { ProductStatus } from '@modules/catalog/domain/value-objects/product-status/product-status.enum';
 import {
   ProductReadRepositoryPort,
   ProductWriteRepositoryPort,
-} from '@modules/product/ports/product.repository.port';
+} from '@modules/catalog/ports/product.repository.port';
 import { HttpStatus } from '@nestjs/common';
+import { FakeProductBuilder } from '@tests/catalog/fake-product.builder';
 import { getTestServer, TestServer } from '@tests/jestSetupAfterEnv';
-import { FakeProductBuilder } from '@tests/product/fake-product.builder';
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import * as request from 'supertest';
 import { getConnection } from 'typeorm';
 
 const feature = loadFeature(
-  'tests/product/delete-product/delete-product.feature',
+  'tests/catalog/delete-product/delete-product.feature',
 );
 
 type PartialProduct = Partial<ProductProps>;

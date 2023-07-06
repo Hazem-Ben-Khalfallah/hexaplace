@@ -9,6 +9,8 @@ import { ProductAlreadyArchivedError } from '@modules/catalog/errors/product/pro
 import { ProductDescriptionRequiredError } from '@modules/catalog/errors/product/product-description-required.error';
 import { ProductNameRequiredError } from '@modules/catalog/errors/product/product-name-required.error';
 import { ProductId } from '../value-objects/product-id.value-object';
+import { ProductArchivedDomainEvent } from '../events/product-archived.domain-event';
+import { ProductDeletedDomainEvent } from '../events/product-deleted.domain-event';
 
 export interface CreateProductProps {
   id?: string;

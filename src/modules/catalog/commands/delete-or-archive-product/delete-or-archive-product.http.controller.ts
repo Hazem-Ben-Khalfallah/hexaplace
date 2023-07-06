@@ -1,4 +1,4 @@
-import { routesV1 } from '@modules/product/product.routes';
+import { routesV1 } from '@modules/catalog/product.routes';
 import {
   Controller,
   Delete,
