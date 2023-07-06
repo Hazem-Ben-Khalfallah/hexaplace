@@ -1,11 +1,9 @@
 import { CommandHandlerBase } from '@libs/ddd/domain/base-classes/command-handler.base';
 import { Guard } from '@libs/ddd/domain/guard';
-import { NotFoundException } from '@libs/exceptions/not-found.exception';
 import { ApproveProductCommand } from '@modules/catalog/commands/approve-product/approve-product.command';
 import { ProductEntity } from '@modules/catalog/domain/entities/product.entity';
 import { ProductId } from '@modules/catalog/domain/value-objects/product-id.value-object';
 import { ProductIdInvalidError } from '@modules/catalog/errors/product/product-id-invalid.error';
-import { ProductNotFoundError } from '@modules/catalog/errors/product/product-not-found.error';
 import { ProductReadRepositoryPort } from '@modules/catalog/ports/product.repository.port';
 import { ProductUnitOfWorkPort } from '@modules/catalog/ports/product.unit-of-work.port';
 import { Inject } from '@nestjs/common';
@@ -40,14 +38,9 @@ export class ApproveProductCommandHandler extends CommandHandlerBase {
   }
 
   private async getProductById(command: ApproveProductCommand) {
-    try {
-      const product = await this.productReadRepository.findOneByIdOrThrow(
-        new ProductId(command.productId),
-      );
-      return product;
-    } catch (error) {
-      if (error instanceof NotFoundException) throw new ProductNotFoundError();
-      throw error;
-    }
+    const product = await this.productReadRepository.findOneByIdOrThrow(
+      new ProductId(command.productId),
+    );
+    return product;
   }
 }

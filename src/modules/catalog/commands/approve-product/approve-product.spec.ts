@@ -1,3 +1,4 @@
+import { NotFoundException } from '@exceptions';
 import { Logger } from '@infrastructure/logger/logger';
 import { DateVO } from '@libs/ddd/domain/value-objects/date.value-object';
 import { ULID } from '@libs/ddd/domain/value-objects/ulid.value-object';
@@ -9,7 +10,6 @@ import { ProductId } from '@modules/catalog/domain/value-objects/product-id.valu
 import { ProductStatus } from '@modules/catalog/domain/value-objects/product-status/product-status.enum';
 import { ProductAlreadyArchivedError } from '@modules/catalog/errors/product/product-already-archived-error.error';
 import { ProductIdInvalidError } from '@modules/catalog/errors/product/product-id-invalid.error';
-import { ProductNotFoundError } from '@modules/catalog/errors/product/product-not-found.error';
 import { ProductApprovedDomainEventHandler } from '@modules/catalog/event-handlers/product-approved.domain-event-handler';
 import { FakeProductBuilder } from '@tests/catalog/fake-product.builder';
 
@@ -47,7 +47,7 @@ describe('approve product', () => {
       // when
       await expect(approveProductCommandHandler.execute(approveProductCommand))
         // then
-        .rejects.toThrow(ProductNotFoundError);
+        .rejects.toThrow(NotFoundException);
     });
 
     it('should return an error if product is marked as archived', async () => {
