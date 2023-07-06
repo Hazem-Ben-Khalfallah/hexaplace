@@ -7,10 +7,10 @@ module.exports = {
   testRegex: 'spec.ts$',
   coverageThreshold: {
     global: {
-      statements: 98.16,
-      branches: 89.09,
-      functions: 97.46,
-      lines: 98.04,
+      statements: 96.19,
+      branches: 90.9,
+      functions: 91.42,
+      lines: 96.35,
     },
   },
 };

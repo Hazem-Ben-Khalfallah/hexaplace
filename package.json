@@ -25,7 +25,6 @@
     "test:all": "jest --config jest.all.config.js --runInBand",
     "test:all:cov": "jest --coverage --config jest.all.config.js --runInBand",
     "test:e2e": "jest --config jest.e2e.config.js --runInBand",
-    "test:e2e:cov": "jest --coverage --config jest.e2e.config.js --runInBand",
     "test:unit": "jest --config jest.config.js --runInBand",
     "test:unit:cov": "jest --coverage --config jest.config.js --runInBand",
     "ts": "ts-node -r tsconfig-paths/register --project ./tsconfig.json",
