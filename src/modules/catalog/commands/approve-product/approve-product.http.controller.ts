@@ -1,4 +1,4 @@
-import { routesV1 } from '@modules/catalog/product.routes';
+import { routesV1 } from '@modules/catalog/catalog.routes';
 import { ApproveProductCommand } from '@modules/catalog/commands/approve-product/approve-product.command';
 import { Controller, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';

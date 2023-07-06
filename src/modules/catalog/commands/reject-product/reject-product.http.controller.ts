@@ -1,4 +1,4 @@
-import { routesV1 } from '@modules/catalog/product.routes';
+import { routesV1 } from '@modules/catalog/catalog.routes';
 import { RejectProductCommand } from '@modules/catalog/commands/reject-product/reject-product.command';
 import { RejectProductHttpRequest } from '@modules/catalog/commands/reject-product/reject-product.request.dto';
 import {

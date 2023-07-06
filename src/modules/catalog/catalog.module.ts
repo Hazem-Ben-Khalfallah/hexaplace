@@ -1,8 +1,4 @@
 import { LoggerModule } from '@infrastructure/logger/logger.module';
-import { ApproveProductCommandHandler } from '@modules/catalog/commands/approve-product/approve-product.command-handler';
-import { ApproveProductHttpController } from '@modules/catalog/commands/approve-product/approve-product.http.controller';
-import { CreateProductCommandHandler } from '@modules/catalog/commands/create-product/create-product.command-handler';
-import { CreateProductHttpController } from '@modules/catalog/commands/create-product/create-product.http.controller';
 import {
   productApprovedDomainEventHandlerProvider,
   productApprovedNotificationProvider,
@@ -11,7 +7,11 @@ import {
   productRejectedNotificationProvider,
   productUnitOfWorkSingletonProvider,
   productWriteRepositoryProvider,
-} from '@modules/catalog/product.providers';
+} from '@modules/catalog/catalog.providers';
+import { ApproveProductCommandHandler } from '@modules/catalog/commands/approve-product/approve-product.command-handler';
+import { ApproveProductHttpController } from '@modules/catalog/commands/approve-product/approve-product.http.controller';
+import { CreateProductCommandHandler } from '@modules/catalog/commands/create-product/create-product.command-handler';
+import { CreateProductHttpController } from '@modules/catalog/commands/create-product/create-product.http.controller';
 import { GetProductHttpController } from '@modules/catalog/queries/get-product/get-product.http.controller';
 import { GetProductQueryHandler } from '@modules/catalog/queries/get-product/get-product.query-handler';
 import { GetProductsHttpController } from '@modules/catalog/queries/get-products/get-products.http.controller';

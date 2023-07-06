@@ -1,5 +1,5 @@
 import { Result } from '@libs/ddd/domain/utils/result.util';
-import { routesV1 } from '@modules/catalog/product.routes';
+import { routesV1 } from '@modules/catalog/catalog.routes';
 import { ProductEntity } from '@modules/catalog/domain/entities/product.entity';
 import { GetProductQuery } from '@modules/catalog/queries/get-product/get-product.query';
 import { Controller, Get, HttpStatus, Param } from '@nestjs/common';

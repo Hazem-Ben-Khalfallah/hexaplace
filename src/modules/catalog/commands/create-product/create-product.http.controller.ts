@@ -1,4 +1,4 @@
-import { routesV1 } from '@modules/catalog/product.routes';
+import { routesV1 } from '@modules/catalog/catalog.routes';
 import { CreateProductCommand } from '@modules/catalog/commands/create-product/create-product.command';
 import { CreateProductHttpRequest } from '@modules/catalog/commands/create-product/create-product.request.dto';
 import { Body, Controller, HttpStatus, Post } from '@nestjs/common';

@@ -1,5 +1,5 @@
 import { Result } from '@libs/ddd/domain/utils/result.util';
-import { routesV1 } from '@modules/catalog/product.routes';
+import { routesV1 } from '@modules/catalog/catalog.routes';
 import { ProductEntity } from '@modules/catalog/domain/entities/product.entity';
 import { GetProductsQuery } from '@modules/catalog/queries/get-products/get-products.query';
 import { GetProductsHttpRequest } from '@modules/catalog/queries/get-products/get-products.request.dto';
