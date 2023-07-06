@@ -1,6 +1,6 @@
 import { typeormConfig } from '@config/ormconfig';
 import { LoggerModule } from '@infrastructure/logger/logger.module';
-import { ProductModule } from '@modules/product/product.module';
+import { ProductModule } from '@modules/catalog/product.module';
 import { Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
 import { TypeOrmModule } from '@nestjs/typeorm';
