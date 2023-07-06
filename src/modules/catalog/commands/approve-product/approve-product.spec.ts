@@ -8,7 +8,7 @@ import { ApproveProductCommandHandler } from '@modules/catalog/commands/approve-
 import { ProductInMemoryUnitOfWork } from '@modules/catalog/database/product.in-memory.unit-of-work';
 import { ProductId } from '@modules/catalog/domain/value-objects/product-id.value-object';
 import { ProductStatus } from '@modules/catalog/domain/value-objects/product-status/product-status.enum';
-import { ProductAlreadyArchivedError } from '@modules/catalog/errors/product/product-already-archived-error.error';
+import { ProductAlreadyArchivedError } from '@modules/catalog/errors/product/product-already-archived.error';
 import { ProductIdInvalidError } from '@modules/catalog/errors/product/product-id-invalid.error';
 import { ProductApprovedDomainEventHandler } from '@modules/catalog/event-handlers/product-approved.domain-event-handler';
 import { FakeProductBuilder } from '@tests/catalog/fake-product.builder';

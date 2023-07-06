@@ -11,5 +11,5 @@ Feature: Manage Orders and Order Items
     When the customer places an order for "2" units of the product
     Then an order should be created
     And order items for the product should be created
-    And the order status should be set as "PendingShipment"
+    And the order status should be set as "orderPlaced"
     And an email is sent to the customer

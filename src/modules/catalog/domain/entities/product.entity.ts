@@ -5,7 +5,7 @@ import { ProductApprovedDomainEvent } from '@modules/catalog/domain/events/produ
 import { ProductCreatedDomainEvent } from '@modules/catalog/domain/events/product-created.domain-event';
 import { ProductRejectedDomainEvent } from '@modules/catalog/domain/events/product-rejected.domain-event';
 import { ProductStatus } from '@modules/catalog/domain/value-objects/product-status/product-status.enum';
-import { ProductAlreadyArchivedError } from '@modules/catalog/errors/product/product-already-archived-error.error';
+import { ProductAlreadyArchivedError } from '@modules/catalog/errors/product/product-already-archived.error';
 import { ProductDescriptionRequiredError } from '@modules/catalog/errors/product/product-description-required.error';
 import { ProductNameRequiredError } from '@modules/catalog/errors/product/product-name-required.error';
 import { ProductId } from '../value-objects/product-id.value-object';
@@ -13,11 +13,6 @@ import { ProductId } from '../value-objects/product-id.value-object';
 export interface CreateProductProps {
   id?: string;
   createdDate?: DateVO;
-  name: string;
-  description: string;
-}
-
-export interface UpdateProductProps {
   name: string;
   description: string;
 }
