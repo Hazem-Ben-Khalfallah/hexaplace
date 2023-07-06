@@ -21,7 +21,7 @@ const feature = loadFeature(
   'tests/catalog/delete-product/delete-product.feature',
 );
 
-type PartialProduct = Partial<ProductProps>;
+type PartialProduct = Partial<ProductProps> & { id: string };
 
 defineFeature(feature, (test) => {
   let productWriteRepository: ProductWriteRepositoryPort;

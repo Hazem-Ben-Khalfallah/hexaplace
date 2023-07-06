@@ -7,7 +7,6 @@ import { ProductEntity } from '@modules/catalog/domain/entities/product.entity';
 import { ProductStatus } from '@modules/catalog/domain/value-objects/product-status/product-status.enum';
 import { ProductAlreadyArchivedError } from '@modules/catalog/errors/product/product-already-archived-error.error';
 import { ProductIdInvalidError } from '@modules/catalog/errors/product/product-id-invalid.error';
-import { ProductNotFoundError } from '@modules/catalog/errors/product/product-not-found.error';
 import { FakeProductBuilder } from '@tests/catalog/fake-product.builder';
 import { DeleteOrArchiveProductCommand } from './delete-or-archive-product.command';
 import { DeleteOrArchiveProductCommandHandler } from './delete-or-archive-product.command-handler';
@@ -47,7 +46,7 @@ describe('delete or archive a product', () => {
       // when
       await expect(deleteOrArchiveProductCommandHandler.execute(command))
         // then
-        .rejects.toThrow(ProductNotFoundError);
+        .rejects.toThrow(NotFoundException);
     });
 
     it('should return an error if product is marked as archived', async () => {
