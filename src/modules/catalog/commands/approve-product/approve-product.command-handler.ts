@@ -27,17 +27,22 @@ export class ApproveProductCommandHandler extends CommandHandlerBase {
     await this.save(command.correlationId, product);
   }
 
-  private isValidOrThrow(command: ApproveProductCommand) {
+  private isValidOrThrow(command: ApproveProductCommand): void {
     if (Guard.isEmpty(command.productId)) throw new ProductIdInvalidError();
   }
 
-  private async save(correlationId: string, product: ProductEntity) {
+  private async save(
+    correlationId: string,
+    product: ProductEntity,
+  ): Promise<void> {
     await this.unitOfWork
       .getWriteProductRepository(correlationId)
       .save(product);
   }
 
-  private async getProductById(command: ApproveProductCommand) {
+  private async getProductById(
+    command: ApproveProductCommand,
+  ): Promise<ProductEntity> {
     const product = await this.productReadRepository.findOneByIdOrThrow(
       new ProductId(command.productId),
     );

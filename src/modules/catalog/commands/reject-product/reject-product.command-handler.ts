@@ -27,18 +27,23 @@ export class RejectProductCommandHandler extends CommandHandlerBase {
     await this.save(command.correlationId, product);
   }
 
-  private isValidOrThrow(command: RejectProductCommand) {
+  private isValidOrThrow(command: RejectProductCommand): void {
     if (Guard.isEmpty(command.productId)) throw new ProductIdInvalidError();
   }
 
-  private async getProductById(command: RejectProductCommand) {
+  private async getProductById(
+    command: RejectProductCommand,
+  ): Promise<ProductEntity> {
     const product = await this.productReadRepository.findOneByIdOrThrow(
       new ProductId(command.productId),
     );
     return product;
   }
 
-  private async save(correlationId: string, product: ProductEntity) {
+  private async save(
+    correlationId: string,
+    product: ProductEntity,
+  ): Promise<void> {
     await this.unitOfWork
       .getWriteProductRepository(correlationId)
       .save(product);
