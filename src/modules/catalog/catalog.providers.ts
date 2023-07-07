@@ -4,6 +4,7 @@ import { ProductOrmRepository } from './database/product.orm-repository';
 import { ProductApprovedDomainEventHandler } from './event-handlers/product-approved.domain-event-handler';
 import { ProductRejectedDomainEventHandler } from './event-handlers/product-rejected.domain-event-handler';
 import { EmailNotificationSender } from './adapters/notification.email.adapter';
+import { DeleteProductDomainEventHandler } from './event-handlers/delete-product.domain-event-handler';
 
 export const productUnitOfWorkSingletonProvider: ClassProvider = {
   provide: 'ProductUnitOfWorkPort',
@@ -60,4 +61,23 @@ export const productRejectdDomainEventHandlerProvider: Provider = {
     return eventHandler;
   },
   inject: ['LoggerPort', 'ProductRejectedNotificationPort'],
+};
+
+export const deleteProductDomainEventHandlerProvider: Provider = {
+  provide: DeleteProductDomainEventHandler,
+  useFactory: (
+    logger,
+    productUnitOfWorkPort,
+    productReadRepositoryPort,
+  ): DeleteProductDomainEventHandler => {
+    const eventHandler = new DeleteProductDomainEventHandler(
+      logger,
+      productUnitOfWorkPort,
+      productReadRepositoryPort,
+    );
+    eventHandler.listen();
+    
+    return eventHandler;
+  },
+  inject: ['LoggerPort', 'ProductUnitOfWorkPort', 'ProductReadRepositoryPort'],
 };

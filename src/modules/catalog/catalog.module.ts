@@ -19,6 +19,8 @@ import { GetProductsQueryHandler } from '@modules/catalog/queries/get-products/g
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DeleteProductCommandHandler } from './commands/delete-product/delete-product.command-handler';
+import { DeleteProductHttpController } from './commands/delete-product/delete-product.http.controller';
 import { RejectProductCommandHandler } from './commands/reject-product/reject-product.command-handler';
 import { RejectProductHttpController } from './commands/reject-product/reject-product.http.controller';
 import { ProductOrmEntity } from './database/product.orm-entity';
@@ -26,6 +28,7 @@ import { ProductOrmEntity } from './database/product.orm-entity';
 const httpControllers = [
   CreateProductHttpController,
   ApproveProductHttpController,
+  DeleteProductHttpController,
   RejectProductHttpController,
   GetProductsHttpController,
   GetProductHttpController,
@@ -36,6 +39,7 @@ const queryHandlers = [GetProductsQueryHandler, GetProductQueryHandler];
 const commandHandlers = [
   CreateProductCommandHandler,
   ApproveProductCommandHandler,
+  DeleteProductCommandHandler,
   RejectProductCommandHandler,
 ];
 

@@ -8,6 +8,8 @@ import { ProductStatus } from '@modules/catalog/domain/value-objects/product-sta
 import { ProductAlreadyArchivedError } from '@modules/catalog/errors/product/product-already-archived.error';
 import { ProductDescriptionRequiredError } from '@modules/catalog/errors/product/product-description-required.error';
 import { ProductNameRequiredError } from '@modules/catalog/errors/product/product-name-required.error';
+import { DeleteProductDomainEvent } from '../events/delete-product.domain-event';
+import { ProductArchivedDomainEvent } from '../events/product-archived.domain-event';
 import { ProductId } from '../value-objects/product-id.value-object';
 
 export interface CreateProductProps {
@@ -53,6 +55,21 @@ export class ProductEntity extends AggregateRoot<ProductProps> {
     return productEntity;
   }
 
+  delete(): void {
+    if (this.isDraft()) {
+      this.emitEvent(
+        new DeleteProductDomainEvent({ aggregateId: this.id.value }),
+      );
+
+      return;
+    }
+
+    this.markAsDeleted();
+    this.emitEvent(
+      new ProductArchivedDomainEvent({ aggregateId: this.id.value }),
+    );
+  }
+
   approve(): void {
     this.updateStatusIfApplicable(ProductStatus.APPROVED);
     this.emitEvent(
@@ -68,6 +85,10 @@ export class ProductEntity extends AggregateRoot<ProductProps> {
         reason,
       }),
     );
+  }
+
+  isDraft(): boolean {
+    return this.props.status === ProductStatus.DRAFT;
   }
 
   markAsDeleted(): void {
