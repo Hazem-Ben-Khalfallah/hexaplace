@@ -21,10 +21,6 @@ module.exports = {
     '<rootDir>/src/migration.ts',
     '<rootDir>/src/infrastructure/',
     '<rootDir>/src/libs/',
-    '<rootDir>/src/infrastructure/database/migrations/',
-    '<rootDir>/src/infrastructure/interceptors/exception.interceptor.ts',
-    '<rootDir>/src/libs/exceptions/index.ts',
-    '<rootDir>/src/libs/decorators/final.decorator.ts',
   ],
   coverageThreshold: {
     global: {
