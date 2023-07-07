@@ -7,9 +7,14 @@ Feature: Manage Orders and Order Items
 
   Scenario: Placing an order
     Given a customer with the name "John Doe" and an email address "john.doe@mail.com"
-    And a product with the name "Awesome Product" and a price of $"99.99"
-    When the customer places an order for "2" units of the product
-    Then an order should be created
-    And order items for the product should be created
-    And the order status should be set as "placed"
+    And the following products exist:
+      | id                                   | name               | price |
+      | b61d9370-7e4d-49fb-abc3-f1cef7307f87 | Awesome Product    | 99.99 |
+      | a6e211ae-cdde-4868-9a61-b683075c26d2 | Impressive Product | 10.99 |
+    And the customer has added "2" units of the product "b61d9370-7e4d-49fb-abc3-f1cef7307f87" in an order
+    And the customer has added "1" units of the product "a6e211ae-cdde-4868-9a61-b683075c26d2" in an order
+    When the customer places the order
+    Then the order total price should equal to $"110.98"
+    Then the order status should be set as "placed"
+    And order items for the products should be created
     And an email is sent to the customer
