@@ -5,7 +5,7 @@ import { UUID } from '@libs/ddd/domain/value-objects/uuid.value-object';
 import { ProductInMemoryUnitOfWork } from '@modules/catalog/database/product.in-memory.unit-of-work';
 import { ProductEntity } from '@modules/catalog/domain/entities/product.entity';
 import { ProductStatus } from '@modules/catalog/domain/value-objects/product-status/product-status.enum';
-import { ProductAlreadyArchivedError } from '@modules/catalog/errors/product/product-already-archived-error.error';
+import { ProductAlreadyArchivedError } from '@modules/catalog/errors/product/product-already-archived.error';
 import { ProductIdInvalidError } from '@modules/catalog/errors/product/product-id-invalid.error';
 import { FakeProductBuilder } from '@tests/catalog/fake-product.builder';
 import { DeleteOrArchiveProductCommand } from './delete-or-archive-product.command';

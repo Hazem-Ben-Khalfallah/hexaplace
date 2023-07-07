@@ -77,7 +77,7 @@ defineFeature(feature, (test) => {
     );
   });
 
-  test('Archiving a product it was already approved', ({
+  test('Archiving a product if it was already approved', ({
     when,
     then,
     and,

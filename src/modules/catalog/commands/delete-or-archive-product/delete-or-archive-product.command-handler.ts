@@ -24,14 +24,14 @@ export class DeleteOrArchiveProductCommandHandler extends CommandHandlerBase {
     this.isValidOrThrow(command);
     const product = await this.getProductById(command);
     product.deleteOrArchive();
-    await this.save(command.correlationId, product);
+    await this.delete(command.correlationId, product);
   }
 
   private isValidOrThrow(command: DeleteOrArchiveProductCommand) {
     if (Guard.isEmpty(command.productId)) throw new ProductIdInvalidError();
   }
 
-  private async save(correlationId: string, product: ProductEntity) {
+  private async delete(correlationId: string, product: ProductEntity) {
     await this.unitOfWork
       .getWriteProductRepository(correlationId)
       .deleteOrArchive(product);
