@@ -27,6 +27,10 @@ export interface ProductProps {
 export class ProductEntity extends AggregateRoot<ProductProps> {
   protected readonly _id: ProductId;
 
+  get status(): ProductStatus {
+    return this.props.status;
+  }
+
   static create(create: CreateProductProps): ProductEntity {
     const id: ProductId = create.id
       ? new ProductId(create.id)
