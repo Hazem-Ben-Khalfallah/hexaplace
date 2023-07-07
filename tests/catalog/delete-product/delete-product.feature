@@ -15,7 +15,7 @@ Feature: delete products
     When I delete a product with id "59a5894c-08e2-44e0-9a2c-89180b59c06b"
     Then the product with id "59a5894c-08e2-44e0-9a2c-89180b59c06b" should not be available anymore
 
-  Scenario: Archiving a product it was already approved
+  Scenario: Archiving a product if it was already approved
     When I delete a product with id "b61d9370-7e4d-49fb-abc3-f1cef7307f87"
     Then I can still find the product with id "b61d9370-7e4d-49fb-abc3-f1cef7307f87"
     But the product should be marked as archived
