@@ -7,6 +7,7 @@ import * as bodyParser from 'body-parser';
 import http from 'http';
 import { description, displayName, version } from '../package.json';
 
+
 function buildSwaggerOptions() {
   return new DocumentBuilder()
     .setTitle(displayName)

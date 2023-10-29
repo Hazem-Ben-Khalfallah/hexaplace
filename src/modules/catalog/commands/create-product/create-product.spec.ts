@@ -23,10 +23,11 @@ describe('Create an product', () => {
   describe('when one or more required fields are missing', () => {
     it('should return an error when name is invalid', async () => {
       // given
-      const createProductCommand: CreateProductCommand = new CreateProductCommand({
-        name: '       ',
-        description: faker.commerce.productDescription(),
-      });
+      const createProductCommand: CreateProductCommand =
+        new CreateProductCommand({
+          name: '       ',
+          description: faker.commerce.productDescription(),
+        });
       // when
       await expect(createProductCommandHandler.execute(createProductCommand))
         // then
@@ -35,10 +36,11 @@ describe('Create an product', () => {
 
     it('should return an error when description is invalid', async () => {
       // given
-      const createProductCommand: CreateProductCommand = new CreateProductCommand({
-        name: faker.commerce.productName(),
-        description: '         ',
-      });
+      const createProductCommand: CreateProductCommand =
+        new CreateProductCommand({
+          name: faker.commerce.productName(),
+          description: '         ',
+        });
       // when
       await expect(createProductCommandHandler.execute(createProductCommand))
         // then
@@ -50,18 +52,20 @@ describe('Create an product', () => {
     it('should create an product', async () => {
       // given
       const id = ProductId.generate();
-      const createProductCommand: CreateProductCommand = new CreateProductCommand({
-        id: id.value,
-        name: faker.commerce.productName(),
-        description: faker.commerce.productDescription(),
-      });
+      const createProductCommand: CreateProductCommand =
+        new CreateProductCommand({
+          id: id.value,
+          name: faker.commerce.productName(),
+          description: faker.commerce.productDescription(),
+        });
 
       // when
       await createProductCommandHandler.execute(createProductCommand);
 
       // then
-      const product: ProductEntity =
-        await productInMemoryUnitOfWork.getReadProductRepository().findOneByIdOrThrow(id);
+      const product: ProductEntity = await productInMemoryUnitOfWork
+        .getReadProductRepository()
+        .findOneByIdOrThrow(id);
       const productProps = product.getPropsCopy();
       expect(productProps?.status).toEqual(ProductStatus.DRAFT);
     });

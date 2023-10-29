@@ -60,6 +60,13 @@ export class ProductEntity extends AggregateRoot<ProductProps> {
     );
   }
 
+  archive() {
+    this.updateStatusIfApplicable(ProductStatus.ARCHIVED);
+    this.emitEvent(
+      new ProductApprovedDomainEvent({ aggregateId: this.id.value }),
+    );
+  }
+
   reject(reason: string): void {
     this.updateStatusIfApplicable(ProductStatus.REJECTED);
     this.emitEvent(
@@ -86,4 +93,5 @@ export class ProductEntity extends AggregateRoot<ProductProps> {
     if (Guard.isEmpty(this.props.description))
       throw new ProductDescriptionRequiredError();
   }
+  
 }

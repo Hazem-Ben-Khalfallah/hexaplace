@@ -14,7 +14,9 @@ describe('get Products paginated', () => {
 
   beforeEach(() => {
     productInMemoryRepository = new ProductInMemoryRepository();
-    getProductsQueryHandler = new GetProductsQueryHandler(productInMemoryRepository);
+    getProductsQueryHandler = new GetProductsQueryHandler(
+      productInMemoryRepository,
+    );
   });
 
   describe('when list products is successful', () => {
@@ -73,7 +75,9 @@ describe('get Products paginated', () => {
     const productPromises: Promise<ProductEntity>[] = Array.from({
       length: productsCount,
     }).map(() => {
-      const productBuilder = FakeProductBuilder.builder(productInMemoryRepository);
+      const productBuilder = FakeProductBuilder.builder(
+        productInMemoryRepository,
+      );
       if (config?.name) productBuilder.withName(config.name);
       if (config?.status) productBuilder.withStatus(config.status);
       return productBuilder.build();
