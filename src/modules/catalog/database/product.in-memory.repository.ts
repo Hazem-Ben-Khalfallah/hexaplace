@@ -4,14 +4,15 @@ import { final } from '@libs/decorators/final.decorator';
 import { ProductOrmEntity } from '@modules/catalog/database/product.orm-entity';
 import { ProductOrmMapper } from '@modules/catalog/database/product.orm-mapper';
 import {
-ProductEntity,
-ProductProps
+  ProductEntity,
+  ProductProps,
 } from '@modules/catalog/domain/entities/product.entity';
 import {
-ProductReadRepositoryPort,
-ProductWriteRepositoryPort
+  ProductReadRepositoryPort,
+  ProductWriteRepositoryPort,
 } from '@modules/catalog/ports/product.repository.port';
 import { GetProductsQuery } from '@modules/catalog/queries/get-products/get-products.query';
+import { ProductStatus } from '../domain/value-objects/product-status/product-status.enum';
 
 @final
 export class ProductInMemoryRepository
@@ -32,5 +33,11 @@ export class ProductInMemoryRepository
     );
 
     return Promise.resolve(this.toDomainEntities(filteredProducts));
+  }
+  async deleteArchive(product: ProductEntity): Promise<any> {
+    if (ProductStatus.DELETED === product.getPropsCopy().status) {
+      this.delete(product);
+    }
+    this.save(product).then();
   }
 }

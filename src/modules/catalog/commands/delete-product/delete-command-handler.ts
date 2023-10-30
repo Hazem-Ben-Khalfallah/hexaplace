@@ -2,10 +2,10 @@ import { CommandProps } from '@src/libs/ddd/domain/base-classes/command-props.ba
 import { Command } from '@src/libs/ddd/domain/base-classes/command.base';
 
 export class DeleteProductCommand extends Command {
-  readonly id: string;
+  readonly productId: string;
 
   constructor(props: CommandProps<DeleteProductCommand>) {
     super(props);
-    this.id = props.id;
+    this.productId = props.productId;
   }
 }

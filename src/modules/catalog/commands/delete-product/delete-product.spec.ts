@@ -25,7 +25,7 @@ describe('Delete Product', () => {
     it('should throw not found error when trying to delete a non-existing product', async () => {
       const nonExistingPoductId = 'b0c317f0-e414-4afa-baa6-e3db069636d2';
       const command = new DeleteProductCommand({
-        productId: nonExistingPoductId,
+        id: nonExistingPoductId,
       });
 
       await expect(
@@ -45,7 +45,7 @@ describe('Delete Product', () => {
       .withStatus(ProductStatus.APPROVED)
       .build();
     const deleteProductCommand = new DeleteProductCommand({
-      productId: product.id.value,
+      id: product.id.value,
     });
     await deleteProductCommandHandler.execute(deleteProductCommand);
 
@@ -62,7 +62,7 @@ describe('Delete Product', () => {
       .withStatus(ProductStatus.ARCHIVED)
       .build();
     const deleteProductCommand = new DeleteProductCommand({
-      productId: product.id.value,
+      id: product.id.value,
     });
 
     await expect(

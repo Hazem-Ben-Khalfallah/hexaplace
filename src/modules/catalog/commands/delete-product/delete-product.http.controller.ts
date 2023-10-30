@@ -37,7 +37,7 @@ export class DeleteProductHttpController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteProductById(@Param('id') id: string): Promise<void> {
-    const command = new DeleteProductCommand({ productId: id });
+    const command = new DeleteProductCommand({ id: id });
     await this.commandBus.execute(command);
   }
 }

@@ -18,6 +18,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProductId } from '../domain/value-objects/product-id.value-object';
+import { ProductStatus } from '../domain/value-objects/product-status/product-status.enum';
 
 @Injectable()
 @final
@@ -48,6 +49,13 @@ export class ProductOrmRepository
     const where: QueryParams<ProductOrmEntity> = removeUndefinedProps(query);
     const products = await this.repository.find({ where });
     return products.map((product) => this.mapper.toDomainEntity(product));
+  }
+
+  async deleteArchive(product: ProductEntity): Promise<void> {
+    if (ProductStatus.DELETED === product.getPropsCopy().status) {
+      this.delete(product);
+    }
+    this.save(product).then();
   }
 
   // Used to construct a query

@@ -3,7 +3,6 @@ import { Guard } from '@libs/ddd/domain/guard';
 import { DeleteProductCommand } from '@modules/catalog/commands/delete-product/delete-product.command';
 import { ProductEntity } from '@modules/catalog/domain/entities/product.entity';
 import { ProductId } from '@modules/catalog/domain/value-objects/product-id.value-object';
-import { ProductAlreadyArchivedError } from '@modules/catalog/errors/product/product-already-archived.error';
 import { ProductIdInvalidError } from '@modules/catalog/errors/product/product-id-invalid.error';
 import { ProductReadRepositoryPort } from '@modules/catalog/ports/product.repository.port';
 import { ProductUnitOfWorkPort } from '@modules/catalog/ports/product.unit-of-work.port';
@@ -20,29 +19,11 @@ export class DeleteProductCommandHandler extends CommandHandlerBase {
   ) {
     super(unitOfWork);
   }
-
   async handle(command: DeleteProductCommand): Promise<void> {
     this.isValidOrThrow(command);
     const product = await this.getProductById(command);
-    if (this.isDraft(product)) {
-      await this.delete(command.correlationId, product);
-    } else if (this.isApproved(product)) {
-      product.archive();
-      await this.save(command.correlationId, product);
-    } else if (this.isArchived(product)) {
-      throw new ProductAlreadyArchivedError();
-    } else {
-      return;
-    }
-  }
-
-  private async save(
-    correlationId: string,
-    product: ProductEntity,
-  ): Promise<void> {
-    await this.unitOfWork
-      .getWriteProductRepository(correlationId)
-      .save(product);
+    product.deleteArchive();
+    await this.delete(command.correlationId, product);
   }
 
   private async delete(
@@ -51,24 +32,49 @@ export class DeleteProductCommandHandler extends CommandHandlerBase {
   ): Promise<void> {
     await this.unitOfWork
       .getWriteProductRepository(correlationId)
-      .delete(product);
+      .deleteArchive(product);
   }
 
   private async getProductById(
     command: DeleteProductCommand,
   ): Promise<ProductEntity> {
     const product = await this.productReadRepository.findOneByIdOrThrow(
-      new ProductId(command.productId),
+      new ProductId(command.id),
     );
     return product;
   }
 
-  private isDraft(product: ProductEntity) {
-    const { status } = product.getPropsCopy();
-    return status === 'draft';
+  private isValidOrThrow(command: DeleteProductCommand): void {
+    if (Guard.isEmpty(command.id)) throw new ProductIdInvalidError();
   }
+}
 
-  private isApproved(product: ProductEntity) {
+/* private isDraft(product: ProductEntity) {
+  const { status } = product.getPropsCopy();
+  return status === 'draft';
+} */
+
+/* private async save(
+  correlationId: string,
+  product: ProductEntity,
+): Promise<void> {
+  await this.unitOfWork
+    .getWriteProductRepository(correlationId)
+    .save(product);
+} */
+
+/*  if (this.isDraft(product)) {
+      await this.delete(command.correlationId, product);
+    } else if (this.isApproved(product)) {
+      product.archive();
+      await this.save(command.correlationId, product);
+    } else if (this.isArchived(product)) {
+      throw new ProductAlreadyArchivedError();
+    } else {
+      return;
+    } */
+
+/*  private isApproved(product: ProductEntity) {
     const { status } = product.getPropsCopy();
     return status === 'approved';
   }
@@ -76,9 +82,4 @@ export class DeleteProductCommandHandler extends CommandHandlerBase {
   private isArchived(product: ProductEntity) {
     const { status } = product.getPropsCopy();
     return status === 'archived';
-  }
-
-  private isValidOrThrow(command: DeleteProductCommand): void {
-    if (Guard.isEmpty(command.productId)) throw new ProductIdInvalidError();
-  }
-}
+  } */
