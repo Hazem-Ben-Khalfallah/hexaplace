@@ -51,15 +51,14 @@ defineFeature(feature, (test) => {
   /* we use fackeBuilder because test should not interact with system (save products on the ddatabase) */
 
   const buildProductsWithFackerBuilder = (
-    productsToCreate: PartialProduct[],
+    products: PartialProduct[],
   ): Promise<ProductEntity[]> => {
-    const promises: Promise<ProductEntity>[] = productsToCreate.map(
-      (productToCreate) =>
-        FakeProductBuilder.builder(productWriteRepository)
-          .withId(productToCreate.id)
-          .withName(productToCreate.name)
-          .withStatus(productToCreate.status)
-          .build(),
+    const promises: Promise<ProductEntity>[] = products.map((product) =>
+      FakeProductBuilder.builder(productWriteRepository)
+        .withId(product.id)
+        .withName(product.name)
+        .withStatus(product.status)
+        .build(),
     );
 
     return Promise.all(promises);
@@ -119,9 +118,7 @@ defineFeature(feature, (test) => {
     /* declared here because it is global scope  and i will use it for  two test cases */
     let productToBeDeleted: ProductEntity;
 
-    given('I am logged in as a marketplace owner', () => {
-      // role management not implemented yet
-    });
+    given('I am logged in as a marketplace owner', () => {});
 
     and(
       'the following products exist:',

@@ -28,10 +28,6 @@ export class DeleteProductHttpController {
     description: 'Product Archived',
   })
   @ApiResponse({
-    status: HttpStatus.UNPROCESSABLE_ENTITY,
-    description: `when archiving a marked as deleted product`,
-  })
-  @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: `when product is not found`,
   })

@@ -55,7 +55,7 @@ export class ProductOrmRepository
     if (ProductStatus.DELETED === product.getPropsCopy().status) {
       this.delete(product);
     }
-    this.save(product).then();
+    this.save(product)
   }
 
   // Used to construct a query

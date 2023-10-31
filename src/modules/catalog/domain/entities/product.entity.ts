@@ -99,7 +99,6 @@ export class ProductEntity extends AggregateRoot<ProductProps> {
   deleteArchive() {
     if (this.isDraft()) {
       this.changeStateOfProductandMakeStatusAsDeleted();
-      return;
     } else if (this.isApproved()) {
       this.archive();
     } else if (this.isArchived()) {

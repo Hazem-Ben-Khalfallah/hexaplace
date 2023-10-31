@@ -79,10 +79,4 @@ describe('Delete Product', () => {
   }
 });
 
-/* const deleteCommand = new DeleteProductCommand({
-  productId: product.id.value,
-});
-await deleteProductCommandHandler.execute(deleteCommand);
-await expect(
-  deleteProductCommandHandler.execute(deleteCommand),
-).rejects.toThrowError(NotFoundException); */
+
