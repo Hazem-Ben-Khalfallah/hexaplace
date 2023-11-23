@@ -49,37 +49,4 @@ export class DeleteProductCommandHandler extends CommandHandlerBase {
   }
 }
 
-/* private isDraft(product: ProductEntity) {
-  const { status } = product.getPropsCopy();
-  return status === 'draft';
-} */
 
-/* private async save(
-  correlationId: string,
-  product: ProductEntity,
-): Promise<void> {
-  await this.unitOfWork
-    .getWriteProductRepository(correlationId)
-    .save(product);
-} */
-
-/*  if (this.isDraft(product)) {
-      await this.delete(command.correlationId, product);
-    } else if (this.isApproved(product)) {
-      product.archive();
-      await this.save(command.correlationId, product);
-    } else if (this.isArchived(product)) {
-      throw new ProductAlreadyArchivedError();
-    } else {
-      return;
-    } */
-
-/*  private isApproved(product: ProductEntity) {
-    const { status } = product.getPropsCopy();
-    return status === 'approved';
-  }
-
-  private isArchived(product: ProductEntity) {
-    const { status } = product.getPropsCopy();
-    return status === 'archived';
-  } */
