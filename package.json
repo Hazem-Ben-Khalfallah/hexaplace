@@ -21,14 +21,16 @@
     "prepare": "npm install husky -D && husky install",
     "start": "nest start",
     "start:dev": "nest start --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node ./dist/main.js",
     "test:all": "jest --config jest.all.config.js --runInBand",
     "test:all:cov": "jest --coverage --config jest.all.config.js --runInBand",
     "test:e2e": "jest --config jest.e2e.config.js --runInBand",
-    "test:unit": "jest --config jest.config.js --runInBand",
+    "test:unit": "jest --config jest.config.js --runInBand ./src/modules/catalog/commands/delete-product/delete-product.spec",
+    "get:unit": "jest --config jest.config.js --runInBand ./src/modules/catalog/queries/get-products/get-products.spec",
     "test:unit:cov": "jest --coverage --config jest.config.js --runInBand",
     "ts": "ts-node -r tsconfig-paths/register --project ./tsconfig.json",
-    "preinstall": "npx npm-force-resolutions"
+    "preinstall": "npx npm-force-resolutions",
+    "test:delete": "jest --config jest.e2e.config.js --runInBand ./tests/catalog/delete-product/delete-product.e2e-spec.ts"
   },
   "dependencies": {
     "@badrap/result": "^0.2.8",

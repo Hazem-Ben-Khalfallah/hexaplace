@@ -37,7 +37,7 @@ defineFeature(feature, (test) => {
     let createdProduct: GetProductById;
 
     given('I am logged in as a seller', () => {
-      // no role management system is implemented yet
+      /* no role management system is implemented yet */
     });
 
     when(

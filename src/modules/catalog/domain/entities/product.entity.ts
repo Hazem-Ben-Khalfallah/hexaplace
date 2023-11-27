@@ -8,6 +8,7 @@ import { ProductStatus } from '@modules/catalog/domain/value-objects/product-sta
 import { ProductAlreadyArchivedError } from '@modules/catalog/errors/product/product-already-archived.error';
 import { ProductDescriptionRequiredError } from '@modules/catalog/errors/product/product-description-required.error';
 import { ProductNameRequiredError } from '@modules/catalog/errors/product/product-name-required.error';
+import { ProductDeletedDomainEvent } from '../events/product-delete.domain-event';
 import { ProductId } from '../value-objects/product-id.value-object';
 
 export interface CreateProductProps {
@@ -26,6 +27,7 @@ export interface ProductProps {
 
 export class ProductEntity extends AggregateRoot<ProductProps> {
   protected readonly _id: ProductId;
+  status: any;
 
   static create(create: CreateProductProps): ProductEntity {
     const id: ProductId = create.id
@@ -60,6 +62,13 @@ export class ProductEntity extends AggregateRoot<ProductProps> {
     );
   }
 
+  archive() {
+    this.updateStatusIfApplicable(ProductStatus.ARCHIVED);
+    this.emitEvent(
+      new ProductApprovedDomainEvent({ aggregateId: this.id.value }),
+    );
+  }
+
   reject(reason: string): void {
     this.updateStatusIfApplicable(ProductStatus.REJECTED);
     this.emitEvent(
@@ -85,5 +94,38 @@ export class ProductEntity extends AggregateRoot<ProductProps> {
     if (Guard.isEmpty(this.props.name)) throw new ProductNameRequiredError();
     if (Guard.isEmpty(this.props.description))
       throw new ProductDescriptionRequiredError();
+  }
+
+  deleteArchive() {
+    if (this.isDraft()) {
+      this.changeStateOfProductandMakeStatusAsDeleted();
+    } else if (this.isApproved()) {
+      this.archive();
+    } else if (this.isArchived()) {
+      throw new ProductAlreadyArchivedError();
+    } else {
+      return;
+    }
+  }
+
+  private changeStateOfProductandMakeStatusAsDeleted() {
+    this.updateStatusIfApplicable(ProductStatus.DELETED);
+    this.emitEvent(
+      new ProductDeletedDomainEvent({
+        aggregateId: this.id.value,
+      }),
+    );
+  }
+
+  private isDraft() {
+    return this.props.status === ProductStatus.DRAFT;
+  }
+
+  private isArchived() {
+    return this.props.status === ProductStatus.ARCHIVED;
+  }
+
+  isApproved() {
+    return this.props.status === ProductStatus.APPROVED;
   }
 }

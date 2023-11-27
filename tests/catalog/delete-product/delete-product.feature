@@ -1,4 +1,4 @@
-Feature: delete products
+Feature: delete product
   As a marketplace owner
   I want to be able to delete or archive a product
   So that I control want is sold on the marketplace
